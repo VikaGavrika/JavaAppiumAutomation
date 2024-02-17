@@ -28,5 +28,16 @@ public class MainClassTest extends MainClass
         //проверка, сравнение чисел (второй способ)
         assertEquals("Метод getLocalNumber должен возвращать число 14", expected,actual);
     }
+
+    //Test2
+    @Test
+    public void testGetClassNumber()
+    {
+        //ожидаемое число больше 45
+        int expectedMinValue = 45;
+        //число,которое возвращает метод
+        int actual = MainClass.getClassNumber();
+        Assert.assertTrue("Метод getClassNumber должен возвращать число больше 45", actual > expectedMinValue);
+    }
 }
 
