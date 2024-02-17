@@ -20,5 +20,14 @@ public class MainClass
     {
         return class_number;
     }
+
+    //Test3
+    //приватное поле класса
+    private final static String class_string = "Hello, world";
+    //метод, который возвращает строку
+    public static String getClassString() {
+        return class_string;
+    }
+
 }
 

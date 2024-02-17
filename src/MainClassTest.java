@@ -39,5 +39,22 @@ public class MainClassTest extends MainClass
         int actual = MainClass.getClassNumber();
         Assert.assertTrue("Метод getClassNumber должен возвращать число больше 45", actual > expectedMinValue);
     }
+
+    //Test3
+    @Test
+    public void  testGetClassString()
+    {
+        // Ожидаемая строка содержит подстроку1 "hello" или подстроку1"Hello"
+        String expectedSubstring1 = "hello";
+        String expectedSubstring2 = "Hello";
+
+        // строка, которая возвращается
+        String actual = MainClass.getClassString();
+
+        //проверка, что актуал строка содержит подстроку1 или подстроку2, если нет, то тест падает и выводим сообщение об ошибке
+        Assert.assertTrue("Метод getClassString должен возвращать строку,  в которой есть подстрока \"hello\" или \"Hello\"", actual.contains(expectedSubstring1) || actual.contains(expectedSubstring2));
+
+    }
+
 }
 
