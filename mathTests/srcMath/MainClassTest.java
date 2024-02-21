@@ -24,9 +24,9 @@ public class MainClassTest extends MainClass
         //ожидаемое число
         int expected = 14;
         //число,которое возвращает метод
-        int actual = MainClass.secondGetLocalNumber();
+        int actual = secondGetLocalNumber();
         //проверка, сравнение чисел (второй способ)
-        assertEquals("Метод getLocalNumber должен возвращать число 14", expected,actual);
+        Assert.assertEquals("Метод getLocalNumber должен возвращать число 14", expected,actual);
     }
 
     //Test2
@@ -36,7 +36,7 @@ public class MainClassTest extends MainClass
         //ожидаемое число больше 45
         int expectedMinValue = 45;
         //число,которое возвращает метод
-        int actual = MainClass.getClassNumber();
+        int actual = getClassNumber();
         Assert.assertTrue("Метод getClassNumber должен возвращать число больше 45", actual > expectedMinValue);
     }
 
@@ -49,7 +49,7 @@ public class MainClassTest extends MainClass
         String expectedSubstring2 = "Hello";
 
         // строка, которая возвращается
-        String actual = MainClass.getClassString();
+        String actual = getClassString();
 
         //проверка, что актуал строка содержит подстроку1 или подстроку2, если нет, то тест падает и выводим сообщение об ошибке
         Assert.assertTrue("Метод getClassString должен возвращать строку,  в которой есть подстрока \"hello\" или \"Hello\"", actual.contains(expectedSubstring1) || actual.contains(expectedSubstring2));
