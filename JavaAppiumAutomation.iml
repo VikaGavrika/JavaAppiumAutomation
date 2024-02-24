@@ -17,5 +17,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="java-client-7.0.0" level="project" />
+    <orderEntry type="library" name="selenium-server-standalone-3.14.0" level="project" />
   </component>
 </module>
