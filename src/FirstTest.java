@@ -3,7 +3,11 @@ import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
 
@@ -31,9 +35,36 @@ public class FirstTest {
         driver.quit();
     }
     @Test
-    public void firstTest()
+    public void firstTest() throws InterruptedException {
+        driver.findElementByXPath("//*[@text='Skip']").click();
+        //вместо driver.findElementByXPath("//*[@text='Search Wikipedia']").click(); пишем метод с таймаутом
+        WebElement element_to_init_search = waitForElementPresentByXpath (
+                "//*[@text='Search Wikipedia']",
+                "Cannot find search input",
+                5
+        );
+        element_to_init_search.click();
+        //вместо driver.findElementByXPath("//*[@text='Search Wikipedia']");
+        WebElement element_to_enter_search_line = waitForElementPresentByXpath (
+                "//*[@text='Search Wikipedia']",
+                "Cannot find search input",
+                5
+        );
+
+        element_to_enter_search_line.sendKeys("Appium");
+
+
+    }
+    //метод, который ищет элемент по xpath с задержкой в 5 сек. В течение 5 сек ищет пока не найдет,если не найдет то сообщение об ощибке
+    private WebElement waitForElementPresentByXpath(String xpath, String error_message, long timeoutInSecond)
     {
-        System.out.println("firstTest run");
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
+        wait.withMessage(error_message +"\n");
+        By by = By.xpath(xpath);
+        return wait.until(
+                //ждем выполнения конкретного условия, ждем элемент by
+                ExpectedConditions.presenceOfElementLocated(by)
+        );
     }
 
 }
