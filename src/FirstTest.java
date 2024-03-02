@@ -37,20 +37,23 @@ public class FirstTest {
     @Test
     public void firstTest() throws InterruptedException {
         driver.findElementByXPath("//*[@text='Skip']").click();
-        //вместо driver.findElementByXPath("//*[@text='Search Wikipedia']").click(); пишем метод с таймаутом
-        WebElement element_to_init_search = waitForElementPresentByXpath (
+
+        //модернизировали метод поиска элемента и клика
+        waitForElementByXpathAndClick(
                 "//*[@text='Search Wikipedia']",
-                "Cannot find search input"
+                "Cannot find search input",
+                5
+
         );
-        element_to_init_search.click();
-        //вместо driver.findElementByXPath("//*[@text='Search Wikipedia']");
-        WebElement element_to_enter_search_line = waitForElementPresentByXpath (
+        //модернизировали метод поиска элемента и отправки значения
+        waitForElementByXpathAndSendKeys(
                 "//*[@text='Search Wikipedia']",
+                "Java",
                 "Cannot find search input",
                 5
         );
 
-        element_to_enter_search_line.sendKeys("Java");
+        //метод проверяющий,что поиск по значению "Java" работает корректно и находится нужная строчка а теме "Java"
         waitForElementPresentByXpath(
                 "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']",
                 "Cannot find 'Object-oriented programming language' topic searching by 'Java'",
@@ -74,6 +77,21 @@ public class FirstTest {
     private WebElement waitForElementPresentByXpath(String xpath, String error_message)
     {
        return waitForElementPresentByXpath(xpath, error_message, 3);
+    }
+
+    //метод, испол-я который тесты сначала будут дожидаться элемента xpath, а после этого происзойдет клик
+    private WebElement waitForElementByXpathAndClick(String xpath, String error_message, long timeoutInSecond)
+    {
+        WebElement element = waitForElementPresentByXpath(xpath,error_message,timeoutInSecond);
+        element.click();
+        return element;
+    }
+    //метод, испол-я который тесты сначала будут дожидаться элемента xpath, а после этого происзойдет отправка текста
+    private WebElement waitForElementByXpathAndSendKeys(String xpath, String value, String error_message, long timeoutInSecond)
+    {
+        WebElement element = waitForElementPresentByXpath(xpath,error_message,timeoutInSecond);
+        element.sendKeys(value);
+        return element;
     }
 
 }
