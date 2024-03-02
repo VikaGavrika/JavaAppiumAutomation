@@ -40,23 +40,23 @@ public class FirstTest {
         driver.findElementByXPath("//*[@text='Skip']").click();
 
         //модернизировали метод поиска элемента и клика
-        waitForElementByXpathAndClick(
-                "//*[@text='Search Wikipedia']",
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
                 "Cannot find search input",
                 5
 
         );
         //модернизировали метод поиска элемента и отправки значения
-        waitForElementByXpathAndSendKeys(
-                "//*[@text='Search Wikipedia']",
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
                 "Java",
                 "Cannot find search input",
                 5
         );
 
         //метод проверяющий,что поиск по значению "Java" работает корректно и находится нужная строчка а теме "Java"
-        waitForElementPresentByXpath(
-                "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']",
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
                 "Cannot find 'Object-oriented programming language' topic searching by 'Java'",
                 15
         );
@@ -69,21 +69,21 @@ public class FirstTest {
         //Смахиваем онбординг
         driver.findElementByXPath("//*[@text='Skip']").click();
         //дожидаемся эдемента строка поиска и кликаем по нему
-        waitForElementByIdAndClick(
-                "org.wikipedia:id/search_container",
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
                 "Cannot find search input",
                 5
         );
 
         //дожидаемся кнопки возврата и кликаем по ней
-        waitForElementByXpathAndClick(
-                "//*[@content-desc='Navigate up']",
+        waitForElementAndClick(
+                By.xpath("//*[@content-desc='Navigate up']"),
                 "Cannot find back-button to cancel search",
                 5
         );
         //Метод, который проверяет,что после нажатия "Назад", мы вернулись на страницу, где нет элемента стрелки "назад"
         waitForElementNotPresent(
-                "//*[@content-desc='Navigate up']",
+                By.xpath("//*[@content-desc='Navigate up']"),
                 "Cannot find back-button to cancel search",
                 5
         );
@@ -91,62 +91,42 @@ public class FirstTest {
     }
 
 
-    //метод, который ищет элемент по xpath с задержкой. В течение этих сек ищет пока не найдет,если не найдет то сообщение об ошибке. Задержку в сек прописываем в тесте
-    private WebElement waitForElementPresentByXpath(String xpath, String error_message, long timeoutInSecond)
+    //метод, котрый будет искать элемент по любому атрибуту
+    private WebElement waitForElementPresent(By by, String error_message, long timeoutInSecond)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
         wait.withMessage(error_message +"\n");
-        By by = By.xpath(xpath);
         return wait.until(
                 //ждем выполнения конкретного условия, ждем элемент by
                 ExpectedConditions.presenceOfElementLocated(by)
         );
     }
-    //метод адаптированный, который ищет элемент по xpath с дефолтной задержкой в 3 сек
-    private WebElement waitForElementPresentByXpath(String xpath, String error_message)
+    //метод адаптированный, который ищет элемент с дефолтной задержкой в 3 сек
+    private WebElement waitForElementPresent(By by, String error_message)
     {
-       return waitForElementPresentByXpath(xpath, error_message, 3);
+       return waitForElementPresent(by, error_message, 3);
     }
 
-    //метод, испол-я который тесты сначала будут дожидаться элемента xpath, а после этого происзойдет клик
-    private WebElement waitForElementByXpathAndClick(String xpath, String error_message, long timeoutInSecond)
+    //метод, испол-я который тесты сначала будут дожидаться элемента, а после этого происзойдет клик
+    private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSecond)
     {
-        WebElement element = waitForElementPresentByXpath(xpath,error_message,timeoutInSecond);
+        WebElement element = waitForElementPresent(by,error_message,timeoutInSecond);
         element.click();
         return element;
     }
-    //метод, испол-я который тесты сначала будут дожидаться элемента xpath, а после этого происзойдет отправка текста
-    private WebElement waitForElementByXpathAndSendKeys(String xpath, String value, String error_message, long timeoutInSecond)
+    //метод, испол-я который тесты сначала будут дожидаться элемента, а после этого происзойдет отправка текста
+    private WebElement waitForElementAndSendKeys(By by, String value, String error_message, long timeoutInSecond)
     {
-        WebElement element = waitForElementPresentByXpath(xpath,error_message,timeoutInSecond);
+        WebElement element = waitForElementPresent(by,error_message,timeoutInSecond);
         element.sendKeys(value);
         return element;
     }
 
-    //метод поиска элемента по ID
-    private WebElement waitForElementPresentById(String id, String error_message, long timeoutInSecond)
-    {
-        WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
-        wait.withMessage(error_message +"\n");
-        By by = By.id(id);
-        return wait.until(
-                //ждем выполнения конкретного условия, ждем элемент by
-                ExpectedConditions.presenceOfElementLocated(by)
-        );
-    }
-    private WebElement waitForElementByIdAndClick(String id, String error_message, long timeoutInSecond)
-    {
-        WebElement element = waitForElementPresentById(id,error_message,timeoutInSecond);
-        element.click();
-        return element;
-    }
-
     //Метод отсутствия элемента на странице
-    private boolean waitForElementNotPresent(String xpath, String error_message, long timeoutInSecond)
+    private boolean waitForElementNotPresent(By by, String error_message, long timeoutInSecond)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
         wait.withMessage(error_message +"\n");
-        By by = By.xpath(xpath);
         return wait.until(
                 //ждем выполнения конкретного условия, ждем элемент by
                 ExpectedConditions.invisibilityOfElementLocated(by)
