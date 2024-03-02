@@ -75,6 +75,19 @@ public class FirstTest {
                 "Cannot find search input",
                 5
         );
+        //вводим значение в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Java",
+                "Cannot find search input",
+                5
+        );
+        //очищаем поле поиска
+        waitForElementAndClear(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Cannot find search field",
+                5
+        );
 
         //дожидаемся кнопки возврата и кликаем по ней
         waitForElementAndClick(
@@ -174,6 +187,15 @@ public class FirstTest {
                 //ждем выполнения конкретного условия, ждем элемент by
                 ExpectedConditions.invisibilityOfElementLocated(by)
         );
+
+    }
+
+    //метод очистки поля ввода
+    private WebElement waitForElementAndClear(By by, String error_message, long timeoutInSecond)
+    {
+        WebElement element = waitForElementPresent(by,error_message,timeoutInSecond);
+        element.clear();
+        return element;
 
     }
 
