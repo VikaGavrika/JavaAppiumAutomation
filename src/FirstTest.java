@@ -40,8 +40,7 @@ public class FirstTest {
         //вместо driver.findElementByXPath("//*[@text='Search Wikipedia']").click(); пишем метод с таймаутом
         WebElement element_to_init_search = waitForElementPresentByXpath (
                 "//*[@text='Search Wikipedia']",
-                "Cannot find search input",
-                5
+                "Cannot find search input"
         );
         element_to_init_search.click();
         //вместо driver.findElementByXPath("//*[@text='Search Wikipedia']");
@@ -55,7 +54,7 @@ public class FirstTest {
 
 
     }
-    //метод, который ищет элемент по xpath с задержкой в 5 сек. В течение 5 сек ищет пока не найдет,если не найдет то сообщение об ощибке
+    //метод, который ищет элемент по xpath с задержкой. В течение этих сек ищет пока не найдет,если не найдет то сообщение об ошибке. Задержку в сек прописываем в тесте
     private WebElement waitForElementPresentByXpath(String xpath, String error_message, long timeoutInSecond)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
@@ -65,6 +64,11 @@ public class FirstTest {
                 //ждем выполнения конкретного условия, ждем элемент by
                 ExpectedConditions.presenceOfElementLocated(by)
         );
+    }
+    //метод адаптированный, который ищет элемент по xpath с дефолтной задержкой в 3 сек
+    private WebElement waitForElementPresentByXpath(String xpath, String error_message)
+    {
+       return waitForElementPresentByXpath(xpath, error_message, 3);
     }
 
 }
