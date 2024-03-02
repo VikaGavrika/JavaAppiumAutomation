@@ -1,6 +1,7 @@
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -39,14 +40,14 @@ public class FirstTest {
     {
         driver.findElementByXPath("//*[@text='Skip']").click();
 
-        //модернизировали метод поиска элемента и клика
+        //поиска строки элемента и клика
         waitForElementAndClick(
                 By.xpath("//*[@text='Search Wikipedia']"),
                 "Cannot find search input",
                 5
 
         );
-        //модернизировали метод поиска элемента и отправки значения
+        //метод поиска элемента и отправки значения в поле
         waitForElementAndSendKeys(
                 By.xpath("//*[@text='Search Wikipedia']"),
                 "Java",
@@ -86,6 +87,48 @@ public class FirstTest {
                 By.xpath("//*[@content-desc='Navigate up']"),
                 "Cannot find back-button to cancel search",
                 5
+        );
+
+    }
+
+    @Test
+    public void testCompareArticleTitle()
+    {
+        driver.findElementByXPath("//*[@text='Skip']").click();
+
+        // поиск элемента, затем кликаем по полю поиска
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        //поиск элемента и отправки значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Java",
+                "Cannot find search input",
+                5
+        );
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                "Cannot find search input",
+                5
+
+        );
+        //поиск заголовока нужной статьи
+        WebElement title_element = waitForElementPresent(
+                By.xpath("//*[@resource-id='pcs']//*[@text='Java (programming language)']"),
+                "Cannot find article title",
+                15
+        );
+        //получаем название статьи, текст этой статьи
+        String article_title = title_element.getAttribute("text");
+        //использвем это название статьи для сравнения
+        Assert.assertEquals(
+                "We see unexpected title",
+                "Java (programming language)",
+                article_title
         );
 
     }
