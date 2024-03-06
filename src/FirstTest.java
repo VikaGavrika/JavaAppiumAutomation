@@ -70,7 +70,7 @@ public class FirstTest {
     {
         //Смахиваем онбординг
         driver.findElementByXPath("//*[@text='Skip']").click();
-        //дожидаемся эдемента строка поиска и кликаем по нему
+        //дожидаемся элемента строка поиска и кликаем по нему
         waitForElementAndClick(
                 By.id("org.wikipedia:id/search_container"),
                 "Cannot find search input",
@@ -163,6 +163,76 @@ public class FirstTest {
         assertElementHasText(inputElement, expectedText);
 
     }
+    @Test
+    public void testSearchAndCanselSearch()
+    {
+        //Смахиваем онбординг
+        driver.findElementByXPath("//*[@text='Skip']").click();
+        //дожидаемся элемента строка поиска и кликаем по нему
+         waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find search input",
+                5
+        );
+        //вводим значение в поле поиска
+         waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "planet",
+                "Cannot find search input",
+                5
+        );
+        //находим элемент 'лист результатов' поиска
+        WebElement resultsList= waitForElementPresent(
+                By.id("org.wikipedia:id/search_results_list"),
+                "Cannot find search resultList",
+                5
+        );
+        //проверяем, что найдены несколько статей со словом planet в листе результатов
+        String expectedText = "planet";
+        assertMultipleSearchResultsWithText( resultsList ,expectedText);
+
+        //очищаем поле поиска, путем нажатия кнопки Закрытия
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "Cannot find close button",
+                5
+        );
+
+        //проверяем, что нет статей в листе результатов, есть пустой лист результатов
+        waitForElementPresent(
+                By.id("org.wikipedia:id/search_empty_container"),
+                "Cannot find search input",
+                10
+        );
+
+    }
+
+    //метод, который проверяет наличие нескольких результатов поиска на странице с ожидаемым текстом
+    private void assertMultipleSearchResultsWithText (WebElement resultsList,  String expectedText)
+    {
+        //считаем сколько заголовков содержит ожидаемый текст
+        //инициализируем переменную, присваиваем значение 0 для инициализации счетчика
+        int expectedTextResultsCount = 0;
+        //перебираем в цикле все элементы в листе
+        for (WebElement result : resultsList.findElements(By.id("org.wikipedia:id/page_list_item_title"))) {
+            //получаем текстовое содержимое текущего WebElement (представляющего результат поиска) и преобразуем его
+            // в нижний регистр, для более корректного сравнения в будущем, также проверяем, содержит ли expectedText.
+            if (result.getText().toLowerCase().contains(expectedText)) {
+                //Если ожидаемое слово найдено в текущем результате поиска, значение expectedWordResultsCount увеличивается на 1.
+                // отслеживаем общее количество результатов поиска, содержащих ожидаемое слово
+                expectedTextResultsCount++;
+            }
+        }
+
+        // проверяем, что больше, чем один результат, содержит ожидаемое слово
+        String errorMessage = "Ожидалось несколько результатов с ожидаемым текстом, но найдено только .. " + expectedTextResultsCount;
+        assert expectedTextResultsCount > 1 : errorMessage;
+
+    }
+
+
+
+
     //метод, который проверяет наличие ожидаемого текста у элемента.
     private void assertElementHasText (WebElement element, String expectedText)
     {
