@@ -191,6 +191,7 @@ public class FirstTest {
         String expectedText = "planet";
         assertMultipleSearchResultsWithText( resultsList ,expectedText);
 
+
         //очищаем поле поиска, путем нажатия кнопки Закрытия
         waitForElementAndClick(
                 By.id("org.wikipedia:id/search_close_btn"),
@@ -207,9 +208,43 @@ public class FirstTest {
 
     }
 
+    //тест, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
+    @Test
+    public void SearchTextAndCheckTextInTitles()
+    {
+        //Смахиваем онбординг
+        driver.findElementByXPath("//*[@text='Skip']").click();
+        //дожидаемся элемента строка поиска и кликаем по нему
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find search input",
+                5
+        );
+        //вводим значение в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "java",
+                "Cannot find search input",
+                5
+        );
+        //находим элемент 'лист результатов' поиска
+        WebElement resultsList= waitForElementPresent(
+                By.id("org.wikipedia:id/search_results_list"),
+                "Cannot find search resultList",
+                5
+        );
+        //проверяем, что в каждой статье в листе результатов есть ожидаемое слово
+        String expectedText = "java";
+        assertMultipleSearchResultsWithText( resultsList ,expectedText);
+
+    }
+
+
     //метод, который проверяет наличие нескольких результатов поиска на странице с ожидаемым текстом
     private void assertMultipleSearchResultsWithText (WebElement resultsList,  String expectedText)
     {
+        // Получаем кол-во статей с ожидаемым словом
+        int resultsCount = resultsList.findElements(By.id("org.wikipedia:id/page_list_item_title")).size();
         //считаем сколько заголовков содержит ожидаемый текст
         //инициализируем переменную, присваиваем значение 0 для инициализации счетчика
         int expectedTextResultsCount = 0;
@@ -218,6 +253,10 @@ public class FirstTest {
             //получаем текстовое содержимое текущего WebElement (представляющего результат поиска) и преобразуем его
             // в нижний регистр, для более корректного сравнения в будущем, также проверяем, содержит ли expectedText.
             if (result.getText().toLowerCase().contains(expectedText)) {
+                String resultText = result.getText().toLowerCase();
+                // Проверка, что ожидаемое слово есть в каждом результате
+                String errorMessage = "Ожидалось, что слово '" + expectedText + "' будет найдено в " + result.getText() + ", но его там нет.";
+                assert resultText.contains(expectedText.toLowerCase()) : errorMessage;
                 //Если ожидаемое слово найдено в текущем результате поиска, значение expectedWordResultsCount увеличивается на 1.
                 // отслеживаем общее количество результатов поиска, содержащих ожидаемое слово
                 expectedTextResultsCount++;
@@ -228,8 +267,14 @@ public class FirstTest {
         String errorMessage = "Ожидалось несколько результатов с ожидаемым текстом, но найдено только .. " + expectedTextResultsCount;
         assert expectedTextResultsCount > 1 : errorMessage;
 
-    }
+        // Вывод в консоль сколько всего результатов статей
+        System.out.println("Найдено " + resultsCount + " статей.");
 
+        // Вывод в консоль сколько результатов содержит ожидаемое слово
+        System.out.println("Найдено " + expectedTextResultsCount + " статей с текстом '" + expectedText + "'.");
+
+
+    }
 
 
 
