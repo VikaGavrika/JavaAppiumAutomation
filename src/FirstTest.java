@@ -1,7 +1,6 @@
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -11,6 +10,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+
+import static org.junit.Assert.assertEquals;
 
 public class FirstTest {
     private AppiumDriver driver;
@@ -129,7 +130,7 @@ public class FirstTest {
                 5
 
         );
-        //поиск заголовока нужной статьи
+        //поиск заголовка нужной статьи
         WebElement title_element = waitForElementPresent(
                 By.xpath("//*[@resource-id='pcs']//*[@text='Java (programming language)']"),
                 "Cannot find article title",
@@ -138,12 +139,39 @@ public class FirstTest {
         //получаем название статьи, текст этой статьи
         String article_title = title_element.getAttribute("text");
         //использвем это название статьи для сравнения
-        Assert.assertEquals(
+        assertEquals(
                 "We see unexpected title",
                 "Java (programming language)",
                 article_title
         );
 
+    }
+    //тест, который проверяет, что поле ввода для поиска статьи содержит текст Search Wikipedia
+    @Test
+    public void testSearchInputHasText()
+    {
+        driver.findElementByXPath("//*[@text='Skip']").click();
+        //поиск поля поиска
+        WebElement inputElement = waitForElementPresent(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+        );
+
+        // Проверка текста
+        String expectedText = "Search Wikipedia";
+        assertElementHasText(inputElement, expectedText);
+
+    }
+    //метод, который проверяет наличие ожидаемого текста у элемента.
+    private void assertElementHasText (WebElement element, String expectedText)
+    {
+        String actualText = element.getText();
+        assertEquals(
+                "Element does not contain expected text",
+                expectedText,
+                actualText
+        );
     }
 
 
