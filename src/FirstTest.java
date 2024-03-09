@@ -1,15 +1,21 @@
+import io.appium.java_client.TouchAction;
+import io.appium.java_client.touch.WaitOptions;
+import io.appium.java_client.touch.offset.PointOption;
 import lib.CoreTestCase;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
+
 public class FirstTest extends CoreTestCase {
 
     @Test
-    public void testSearch() throws InterruptedException
-    {
+    public void testSearch() throws InterruptedException {
         driver.findElementByXPath("//*[@text='Skip']").click();
 
         //поиска строки элемента и клика
@@ -37,8 +43,7 @@ public class FirstTest extends CoreTestCase {
     }
 
     @Test
-    public void testCanselSearch()
-    {
+    public void testCanselSearch() {
         //Смахиваем онбординг
         driver.findElementByXPath("//*[@text='Skip']").click();
         //дожидаемся элемента строка поиска и кликаем по нему
@@ -77,8 +82,7 @@ public class FirstTest extends CoreTestCase {
     }
 
     @Test
-    public void testCompareArticleTitle()
-    {
+    public void testCompareArticleTitle() {
         driver.findElementByXPath("//*[@text='Skip']").click();
 
         // поиск элемента, затем кликаем по полю поиска
@@ -103,7 +107,7 @@ public class FirstTest extends CoreTestCase {
         );
         //поиск заголовка нужной статьи
         WebElement title_element = waitForElementPresent(
-                By.xpath("//*[@resource-id='pcs']//*[@text='Java (programming language)']"),
+                By.xpath("//*[@text='Java (programming language)']"),
                 "Cannot find article title",
                 15
         );
@@ -117,10 +121,52 @@ public class FirstTest extends CoreTestCase {
         );
 
     }
+
+    //Тест, поиск по слову. открытие определенной статьи, свайп статьи
+    @Test
+    public void testSwipeArticle() {
+        driver.findElementByXPath("//*[@text='Skip']").click();
+
+        // поиск элемента, затем кликаем по полю поиска
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        //поиск элемента и отправки значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Java",
+                "Cannot find search input",
+                5
+        );
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                "Cannot find search input",
+                5
+
+        );
+        //поиск заголовка нужной статьи
+        waitForElementPresent(
+                By.xpath("//*[@content-desc='Java (programming language)']"),
+                "Cannot find article title",
+                15
+        );
+
+        swipeUp(3000);
+        swipeUp(3000);
+        swipeUp(3000);
+        swipeUp(3000);
+        swipeUp(3000);
+
+
+    }
+
+
     //тест, который проверяет, что поле ввода для поиска статьи содержит текст Search Wikipedia
     @Test
-    public void testSearchInputHasText()
-    {
+    public void testSearchInputHasText() {
         driver.findElementByXPath("//*[@text='Skip']").click();
         //поиск поля поиска
         WebElement inputElement = waitForElementPresent(
@@ -134,35 +180,35 @@ public class FirstTest extends CoreTestCase {
         assertElementHasText(inputElement, expectedText);
 
     }
+
     //Тест, который делает поиск по какому-то слову. Затем убеждается, найдены несколько статей со словом в листе результатов,
     // затем удаляет результаты поиска и убеждается что лист с результатами пуст
     @Test
-    public void testSearchAndCanselSearch()
-    {
+    public void testSearchAndCanselSearch() {
         //Смахиваем онбординг
         driver.findElementByXPath("//*[@text='Skip']").click();
         //дожидаемся элемента строка поиска и кликаем по нему
-         waitForElementAndClick(
+        waitForElementAndClick(
                 By.id("org.wikipedia:id/search_container"),
                 "Cannot find search input",
                 5
         );
         //вводим значение в поле поиска
-         waitForElementAndSendKeys(
+        waitForElementAndSendKeys(
                 By.xpath("//*[@text='Search Wikipedia']"),
                 "planet",
                 "Cannot find search input",
                 5
         );
         //находим элемент 'лист результатов' поиска
-        WebElement resultsList= waitForElementPresent(
+        WebElement resultsList = waitForElementPresent(
                 By.id("org.wikipedia:id/search_results_list"),
                 "Cannot find search resultList",
                 5
         );
         //проверяем, что найдены несколько статей со словом planet в листе результатов
         String expectedText = "planet";
-        assertMultipleSearchResultsWithText( resultsList ,expectedText);
+        assertMultipleSearchResultsWithText(resultsList, expectedText);
 
 
         //очищаем поле поиска, путем нажатия кнопки Закрытия
@@ -183,8 +229,7 @@ public class FirstTest extends CoreTestCase {
 
     //тест, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
     @Test
-    public void testSearchTextAndCheckTextInTitles()
-    {
+    public void testSearchTextAndCheckTextInTitles() {
         //Смахиваем онбординг
         driver.findElementByXPath("//*[@text='Skip']").click();
         //дожидаемся элемента строка поиска и кликаем по нему
@@ -201,21 +246,20 @@ public class FirstTest extends CoreTestCase {
                 5
         );
         //находим элемент 'лист результатов' поиска
-        WebElement resultsList= waitForElementPresent(
+        WebElement resultsList = waitForElementPresent(
                 By.id("org.wikipedia:id/search_results_list"),
                 "Cannot find search resultList",
                 5
         );
         //проверяем, что в каждой статье в листе результатов есть ожидаемое слово
         String expectedText = "java";
-        assertMultipleSearchResultsWithText( resultsList ,expectedText);
+        assertMultipleSearchResultsWithText(resultsList, expectedText);
 
     }
 
 
     //метод, который проверяет наличие нескольких результатов поиска на странице с ожидаемым текстом
-    private void assertMultipleSearchResultsWithText (WebElement resultsList,  String expectedText)
-    {
+    private void assertMultipleSearchResultsWithText(WebElement resultsList, String expectedText) {
         // Получаем кол-во статей с ожидаемым словом
         int resultsCount = resultsList.findElements(By.id("org.wikipedia:id/page_list_item_title")).size();
         //считаем сколько заголовков содержит ожидаемый текст
@@ -250,10 +294,8 @@ public class FirstTest extends CoreTestCase {
     }
 
 
-
     //метод, который проверяет наличие ожидаемого текста у элемента.
-    private void assertElementHasText (WebElement element, String expectedText)
-    {
+    private void assertElementHasText(WebElement element, String expectedText) {
         String actualText = element.getText();
         assertEquals(
                 "Element does not contain expected text",
@@ -264,41 +306,38 @@ public class FirstTest extends CoreTestCase {
 
 
     //метод, котрый будет искать элемент по любому атрибуту
-    private WebElement waitForElementPresent(By by, String error_message, long timeoutInSecond)
-    {
+    private WebElement waitForElementPresent(By by, String error_message, long timeoutInSecond) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
-        wait.withMessage(error_message +"\n");
+        wait.withMessage(error_message + "\n");
         return wait.until(
                 //ждем выполнения конкретного условия, ждем элемент by
                 ExpectedConditions.presenceOfElementLocated(by)
         );
     }
+
     //метод адаптированный, который ищет элемент с дефолтной задержкой в 3 сек
-    private WebElement waitForElementPresent(By by, String error_message)
-    {
-       return waitForElementPresent(by, error_message, 3);
+    private WebElement waitForElementPresent(By by, String error_message) {
+        return waitForElementPresent(by, error_message, 3);
     }
 
     //метод, испол-я который тесты сначала будут дожидаться элемента, а после этого происзойдет клик
-    private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSecond)
-    {
-        WebElement element = waitForElementPresent(by,error_message,timeoutInSecond);
+    private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSecond) {
+        WebElement element = waitForElementPresent(by, error_message, timeoutInSecond);
         element.click();
         return element;
     }
+
     //метод, испол-я который тесты сначала будут дожидаться элемента, а после этого происзойдет отправка текста
-    private WebElement waitForElementAndSendKeys(By by, String value, String error_message, long timeoutInSecond)
-    {
-        WebElement element = waitForElementPresent(by,error_message,timeoutInSecond);
+    private WebElement waitForElementAndSendKeys(By by, String value, String error_message, long timeoutInSecond) {
+        WebElement element = waitForElementPresent(by, error_message, timeoutInSecond);
         element.sendKeys(value);
         return element;
     }
 
     //Метод отсутствия элемента на странице
-    private boolean waitForElementNotPresent(By by, String error_message, long timeoutInSecond)
-    {
+    private boolean waitForElementNotPresent(By by, String error_message, long timeoutInSecond) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
-        wait.withMessage(error_message +"\n");
+        wait.withMessage(error_message + "\n");
         return wait.until(
                 //ждем выполнения конкретного условия, ждем элемент by
                 ExpectedConditions.invisibilityOfElementLocated(by)
@@ -307,15 +346,35 @@ public class FirstTest extends CoreTestCase {
     }
 
     //метод очистки поля ввода
-    private WebElement waitForElementAndClear(By by, String error_message, long timeoutInSecond)
-    {
-        WebElement element = waitForElementPresent(by,error_message,timeoutInSecond);
+    private WebElement waitForElementAndClear(By by, String error_message, long timeoutInSecond) {
+        WebElement element = waitForElementPresent(by, error_message, timeoutInSecond);
         element.clear();
         return element;
 
     }
 
+    //метод свайпа снизу-вверх
+    protected void swipeUp(int timeOfSwipe) {
+        // Определяем размер экрана
+        Dimension size = driver.manage().window().getSize();
+        // Вычисляем координаты
+        int startY = (int) (size.height * 0.70); // Начальная точка Y (70% от высоты экрана)
+        int endY = (int) (size.height * 0.30); // Конечная точка Y (30% от высоты экрана)
+        int centerX = size.width / 2; // Центральная точка X
+        //для отслеживания выполнения свайпа добавила исключения и логирование
+        try {
+            TouchAction touchAction = new TouchAction(driver);
+            System.out.println("Начинаю свайп...");
+            PointOption pointOption = PointOption.point(centerX, startY);
+            touchAction.press(pointOption).waitAction(WaitOptions.waitOptions(Duration.ofSeconds(timeOfSwipe))).moveTo(PointOption.point(centerX, endY)).release().perform();
+            System.out.println("Свайп выполнен успешно!");
+        } catch (Exception e) {
+            // Обработка исключения
+            System.out.println("Ошибка при выполнении свайпа: " + e.getMessage());
+        }
+    }
 
 }
+
 
 
