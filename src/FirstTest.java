@@ -6,10 +6,13 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.PointerInput;
+import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 
 public class FirstTest extends CoreTestCase {
@@ -122,7 +125,7 @@ public class FirstTest extends CoreTestCase {
 
     }
 
-    //Тест, поиск по слову. открытие определенной статьи, свайп статьи
+    //Тест, свайп до конца страницы до текста в футере
     @Test
     public void testSwipeArticle() {
         driver.findElementByXPath("//*[@text='Skip']").click();
@@ -137,29 +140,28 @@ public class FirstTest extends CoreTestCase {
         //поиск элемента и отправки значения в поле поиска
         waitForElementAndSendKeys(
                 By.xpath("//*[@text='Search Wikipedia']"),
-                "Java",
+                "appium",
                 "Cannot find search input",
                 5
         );
         waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id=\"org.wikipedia:id/page_list_item_title\" and @text=\"Appium\"]"),
                 "Cannot find search input",
                 5
 
         );
         //поиск заголовка нужной статьи
         waitForElementPresent(
-                By.xpath("//*[@content-desc='Java (programming language)']"),
+                By.xpath("//*[@text=\"Automation for Apps\"]"),
                 "Cannot find article title",
                 15
         );
-
-        swipeUp(3000);
-        swipeUp(3000);
-        swipeUp(3000);
-        swipeUp(3000);
-        swipeUp(3000);
-
+        //swipeQuick();
+        verticalSwipeToFindElement(
+                By.xpath("//*[@text=\"View article in browser\"]"),
+               "Cannot find the end of the article",
+                6
+        );
 
     }
 
@@ -353,7 +355,7 @@ public class FirstTest extends CoreTestCase {
 
     }
 
-    //метод свайпа снизу-вверх
+    //НЕ РАБОТАЕТ метод свайпа снизу-вверх
     protected void swipeUp(int timeOfSwipe) {
         // Определяем размер экрана
         Dimension size = driver.manage().window().getSize();
@@ -371,6 +373,69 @@ public class FirstTest extends CoreTestCase {
         } catch (Exception e) {
             // Обработка исключения
             System.out.println("Ошибка при выполнении свайпа: " + e.getMessage());
+        }
+    }
+    //РАБОТАЕТ метод свайпа снизу-вверх
+    public void verticalSwipe(int timeOfSwipe) {
+        Dimension size = driver.manage().window().getSize();
+        int startY = (int) (size.height * 0.70);
+        int endY = (int) (size.height * 0.30);
+        int centerX = size.width / 2;
+
+        PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH,"finger");
+        Sequence swipe = new Sequence(finger,1);
+
+        System.out.println("Начинаю свайп...");
+
+        //Двигаем палец на начальную позицию
+        swipe.addAction(finger.createPointerMove(Duration.ofMillis(timeOfSwipe),
+                PointerInput.Origin.viewport(),centerX, startY));
+        //Палец прикасается к экрану
+        swipe.addAction(finger.createPointerDown(0));
+
+        //Палец двигается к конечной точке
+        swipe.addAction(finger.createPointerMove(Duration.ofMillis(timeOfSwipe),
+                PointerInput.Origin.viewport(),centerX, endY));
+
+        //Убираем палец с экрана
+        swipe.addAction(finger.createPointerUp(0));
+
+        //Выполняем действия
+        driver.perform(Arrays.asList(swipe));
+        System.out.println("Свайп выполнен успешно!");
+    }
+    //Быстрый свайп
+    protected void swipeQuick()
+    {
+        verticalSwipe(2000);
+
+    }
+
+    //метод, в котором будем свайпить до определенного элемента
+    protected void verticalSwipeToFindElement(By by, String error_message, int max_swipes)
+    {
+        //поиск всех элементов и считаем кол-во найденных элементов
+        //цикл будет работать (свайпить) пока функция не находит ни одного элемента, как только элемент найдется, цикл завершится
+        //если превысим кол-во свайпов, то цикл остановится
+        int already_swiped = 0;      //начальный счетчик свайпов
+        while(driver.findElements(by).size() == 0)
+        {
+            //остановка цикла, если свайпы превысили макс значение
+            if (already_swiped > max_swipes){
+                //проверяем, что этого элемента все еще нет
+                waitForElementPresent(by, "Cannot find element by swiping up. \n" +error_message,0);
+                //если элемент нашелся, выходим с метода и идем дальше по коду
+                return;
+            }
+            try {
+                swipeQuick();
+            }catch (Exception e) {
+                // Обработка исключения
+                System.out.println("Ошибка при выполнении свайпа: " + e.getMessage());
+            }
+            ++already_swiped;    //счетчик свайпов с каждым циклом
+            // Вывод в консоль сколько свайпов было сделано
+            System.out.println("сделано " + already_swiped + " свайпов");
         }
     }
 
