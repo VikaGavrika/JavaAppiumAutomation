@@ -258,6 +258,152 @@ public class FirstTest extends CoreTestCase {
         assertMultipleSearchResultsWithText(resultsList, expectedText);
 
     }
+    //Поиск определенной статьи, выбрать статью, нажать на кнопку с выпадающем списком, после открытия выбрать
+    // и нажать на кнопку из списка, в батоншите создать новый список (нажав на кнопку), ввести название списка в поле,
+    // нажать ОК, выйти из статьи, нажать на кнопку списки, перейти на экран со спискими, выбрать один их них, нажать,
+    // убедиться что в списке присутствует выбранная статья, удалить статью,
+    // убедиться, что она удалена, тест будет считаться законченным
+    public void testSavedFirstArticleToMyList(){
+        driver.findElementByXPath("//*[@text='Skip']").click();
+
+        // поиск элемента, затем кликаем по полю поиска
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        //поиск элемента и отправки значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Java",
+                "Cannot find search input",
+                5
+        );
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                "Cannot find search input",
+                5
+
+        );
+        //поиск заголовка нужной статьи
+        waitForElementPresent(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "Cannot find article title",
+                15
+        );
+        //нажать на кнопку с выпадающим списком
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
+                "Cannot find button to open article options",
+                5
+        );
+        //нажать на кнопку настроек тулбара
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/customize_toolbar\"]"),
+                "Cannot find button to open customize_toolbar",
+                5
+        );
+
+        //перенос кнопки элемента по координатам
+        moveButton (200,1010,693,1005,1748);
+
+        //возврат к статье, нажав Назад
+        waitForElementAndClick(
+                By.xpath("//*[@content-desc='Navigate up']"),
+                "Cannot find back-button to cancel search",
+                5
+        );
+        //снова нажать на кнопку с выпадающим списком
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
+                "Cannot find button to open article options",
+                5
+        );
+        //нажать на кнопку Save в выпадающем списке
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]"),
+                "Cannot find options to add article to reading list",
+                5
+        );
+        //в появившимся снэк-баре нажать кнопку добавления в список
+        waitForElementAndClick(
+                By.xpath("//*[@text=\"Add to list\"]"),
+                "Cannot find button Add to list",
+                5
+        );
+        //В появившемся мод окне ввести название списка в поле ввода
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id=\"org.wikipedia:id/text_input\"]"),
+                "article1",
+                "Cannot put text into articles folder input",
+                5
+        );
+        //нажать на кнопку ОК
+        waitForElementAndClick(
+                By.xpath("//*[@text=\"OK\"]"),
+                "Cannot press ОК button",
+                5
+        );
+        //нажать на кнопку в снэк баре View list
+        waitForElementAndClick(
+                By.xpath("//*[@text=\"View list\"]"),
+                "Cannot press View list button",
+                5
+        );
+        //нажать кнопку назад 3 раза, чтобы вернуться на главную страницу
+        //цикл, повторяем код, пока не будет выполнено определенное условие.
+        int i = 0;
+        while (i < 3) {
+            waitForElementAndClick(
+                    By.xpath("//*[@content-desc='Navigate up']"),
+                    "Cannot find back-button to cancel search",
+                    5
+            );
+            i++;
+        }
+        //кнопка Saved в меню
+        waitForElementAndClick(
+                By.xpath("//android.widget.FrameLayout[@content-desc=\"Saved\"]"),
+                "Cannot find navigation Saved button to My list",
+                5
+        );
+        //поиск статьи по названию. клик на статью
+        waitForElementAndClick(
+                By.xpath("//*[@text=\"article1\"]"),
+                "Cannot find article into My list",
+                5
+        );
+        //нажать на кнопку с выпадающим списком
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
+                "Cannot find button to open article options when we try to remove article",
+                5
+        );
+        //поиск в списке кнопки remove удаления всех стаей
+        waitForElementAndClick(
+                By.xpath("//*[@text=\"Remove all from offline\"]"),
+                "Cannot find text Remove",
+                5
+        );
+        //поиск заголовка нужной статьи
+        waitForElementPresent(
+                By.xpath("//*[@text='article1']"),
+                "Cannot find article title",
+                15
+        );
+
+
+
+
+
+
+
+
+
+
+
+    }
 
 
     //метод, который проверяет наличие нескольких результатов поиска на странице с ожидаемым текстом
@@ -438,6 +584,40 @@ public class FirstTest extends CoreTestCase {
             System.out.println("сделано " + already_swiped + " свайпов");
         }
     }
+    //метод перемещения элемента по координатам
+    protected void moveButton(int timeOfSwipe, int startX, int startY, int endX,int endY) {
+
+        // Нажатие и перемещение кнопки
+        try {
+            //создаем PointerInput
+            PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH,"finger");
+            //создаем последовательность действий
+            Sequence move = new Sequence(finger,1);
+            System.out.println("Начинаю перемещение кнопки...");
+            move.addAction(finger.createPointerMove(Duration.ofMillis(timeOfSwipe),
+                    PointerInput.Origin.viewport(),startX, startY));
+            //Палец прикасается к экрану
+            move.addAction(finger.createPointerDown(1));
+
+            //Палец двигается к конечной точке
+            move.addAction(finger.createPointerMove(Duration.ofMillis(timeOfSwipe),
+                    PointerInput.Origin.viewport(),endX, endY));
+
+            //Убираем палец с экрана
+            move.addAction(finger.createPointerUp(1));
+
+            //Выполняем действия
+            driver.perform(Arrays.asList( move));
+
+            System.out.println("Перемещение выполнено успешно!");
+        } catch (Exception e) {
+            // Обработка исключения
+            System.out.println("Ошибка при перемещении кнопки: " + e.getMessage());
+
+
+        }
+    }
+
 
 }
 
