@@ -543,8 +543,49 @@ public class FirstTest extends CoreTestCase {
                 title_after_second_rotation
         );
 
+    }
+
+    //Тест12, который вводит значение в поиск, находить определенный элемент в результатах поиска,
+    // потом приложение сворачиваем, через некоторое время разворачиваем, после открытия приложения проверяем,
+    // что элемент, остался на месте.
+    @Test
+    public void testCheckSearchArticleInBackground(){
+        driver.findElementByXPath("//*[@text='Skip']").click();
+
+        // поиск элемента, затем кликаем по полю поиска
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        //поиск элемента и отправки значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Java",
+                "Cannot find search input",
+                5
+        );
+        //находим нужную статью
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                "Cannot find search input",
+                5
+        );
+        //отправляем приложение в бэкграунд
+        driver.runAppInBackground(Duration.ofSeconds(5));
+        //после этого приложение автоматически развернется
+
+        //убеждаемся,что та же самая статья действительно присутствует
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                "Cannot find article after returned from background",
+                5
+        );
 
     }
+
+
 
     //метод получения заголовка статьи
     private String waitForElementAndGetAttribute(By by, String attribute, String error_message, long timeoutInSeconds ){
