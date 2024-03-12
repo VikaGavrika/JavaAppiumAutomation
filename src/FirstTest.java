@@ -232,7 +232,6 @@ public class FirstTest extends CoreTestCase {
     }
 
     //тест, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
-    @Test
     public void testSearchTextAndCheckTextInTitles() {
         //Смахиваем онбординг
         driver.findElementByXPath("//*[@text='Skip']").click();
@@ -413,14 +412,13 @@ public class FirstTest extends CoreTestCase {
                 "Cannot find search input",
                 5
         );
-        //задаем переменную, которые будет имп-ть неск раз
+        //задаем переменную, которые будем исп-ть неск раз
         String search_results_locator = "//*[@resource-id=\"org.wikipedia:id/search_results_list\"]/android.view.ViewGroup";
         //поиск элемента
         waitForElementPresent(
                 By.xpath(search_results_locator),
-                "Cannot find anything by the request" +search_line,
+                "Cannot find anything by the request " +search_line,
                 15
-
         );
         int amount_of_search_results = getAmountOfElements(
                 By.xpath(search_results_locator)
@@ -432,8 +430,53 @@ public class FirstTest extends CoreTestCase {
         );
 
 
+    }
+    //Тест, который будет проверять, что результаты поиска не содержат элементы с определенным текстом.
+    // И есть элемент "нет результатов"
+    @Test
+    public void testAmountOfEmptySearch(){
+        driver.findElementByXPath("//*[@text='Skip']").click();
+
+        // поиск элемента, затем кликаем по полю поиска
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        //Зададим переменную, название статьи
+        String search_line = "ppppppppppp";
+
+        //поиск элемента и отправки значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                search_line,
+                "Cannot find search input",
+                5
+        );
+        //задаем переменную, которые будем исп-ть неск раз
+        String search_results_locator = "//*[@resource-id=\"org.wikipedia:id/search_results_list\"]/android.view.ViewGroup";
+        //создаем локатор, в котором будем искать текст No results
+        String empty_result = "//*[@text = 'No results']";
+        //поиск элемента
+        waitForElementPresent(
+                By.xpath(empty_result),
+                "Cannot find empty result label by the request " +search_line,
+                15
+
+        );
+        assertNoElementsPresentWithText(
+                By.xpath(search_results_locator),
+                search_line,
+                "We've found some results by request" + search_line
+        );
+
 
     }
+
+
+
+
     //метод считает количество элементов, которые нашли
     private int getAmountOfElements(By by)
     {
@@ -443,6 +486,34 @@ public class FirstTest extends CoreTestCase {
         return elements.size();
     }
 
+    //метод, проверяющий, что не нашлось ни одного элемента с текстом из поиска
+    private void assertNoElementsPresentWithText(By by, String search_line, String error_message){
+        //получаем кол-во элементов
+        int amount_of_elements = getAmountOfElements(by);
+        // Вывод в консоль сколько всего результатов статей
+        System.out.println("Найден " + amount_of_elements + " элемент с текстом.");
+        //если нашли элемент, то проверяем, какой текст он содержит. Если содержит текст поиска,
+        // то выдаем исключение с сообщением
+        if (amount_of_elements>0) {
+            //получаем список найденных элементов
+            List <WebElement> elements = driver.findElements(by);
+            // Проверить каждый элемент
+            for (WebElement element : elements) {
+                String elementText = element.getText();
+                // Если элемент содержит ожидаемый текст, вывести сообщение об ошибке
+                if (elementText.contains(search_line)) {
+                    //передаем элемент by в строковое значение, предполагается, что этот элемент отсутствует
+                    //формируем строку с этим элементом
+                    String default_message = "An element '" + by.toString() + "'supposed to be not present";
+                    //обозначает проблему, что этого элемента не должно быть, а он есть, и кидаем сообщение об этом
+                    throw new AssertionError(default_message + " " + error_message);
+                }
+            }
+            // Если ни один элемент не содержит текст с поиска, то успех
+            System.out.println("No elements found with text: " + search_line);
+        }
+
+    }
 
 
 
