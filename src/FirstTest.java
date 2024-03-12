@@ -2,6 +2,7 @@ import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import lib.CoreTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -13,6 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class FirstTest extends CoreTestCase {
@@ -389,6 +391,59 @@ public class FirstTest extends CoreTestCase {
         );
 
     }
+    //Тест, которой ищет какую-то конкретную статью, а затем проверяет, что вышел 1 результат с этой статьей
+    @Test
+    public void testAmountOfNotEmptySearch(){
+        driver.findElementByXPath("//*[@text='Skip']").click();
+
+        // поиск элемента, затем кликаем по полю поиска
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        //Зададим переменную, название статьи
+        String search_line = "Linkin Park discography";
+
+        //поиск элемента и отправки значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                search_line,
+                "Cannot find search input",
+                5
+        );
+        //задаем переменную, которые будет имп-ть неск раз
+        String search_results_locator = "//*[@resource-id=\"org.wikipedia:id/search_results_list\"]/android.view.ViewGroup";
+        //поиск элемента
+        waitForElementPresent(
+                By.xpath(search_results_locator),
+                "Cannot find anything by the request" +search_line,
+                15
+
+        );
+        int amount_of_search_results = getAmountOfElements(
+                By.xpath(search_results_locator)
+        );
+        //убеждаемся, что кол-во полученных элементов больше нуля
+        Assert.assertTrue(
+                "We found too few results",
+                amount_of_search_results > 0
+        );
+
+
+
+    }
+    //метод считает количество элементов, которые нашли
+    private int getAmountOfElements(By by)
+    {
+        //Функция, которая создает список
+        List elements = driver.findElements(by);
+        //возвращаем кол-во элементов,которые были найдены
+        return elements.size();
+    }
+
+
 
 
     //метод, который проверяет наличие нескольких результатов поиска на странице с ожидаемым текстом
@@ -602,6 +657,7 @@ public class FirstTest extends CoreTestCase {
 
         }
     }
+    //Метод свайпа влево
     public void leftSwipe(int timeOfSwipe, int startX, int startY, int endX,int endY) {
         try {
             //создаем PointerInput
