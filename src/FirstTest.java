@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
@@ -431,7 +432,7 @@ public class FirstTest extends CoreTestCase {
 
 
     }
-    //Тест, который будет проверять, что результаты поиска не содержат элементы с определенным текстом.
+    //Тест10, который будет проверять, что результаты поиска не содержат элементы с определенным текстом.
     // И есть элемент "нет результатов"
     @Test
     public void testAmountOfEmptySearch(){
@@ -471,6 +472,84 @@ public class FirstTest extends CoreTestCase {
                 "We've found some results by request" + search_line
         );
 
+    }
+    //Тест11, который вводит значение в поиск, выбирает статью, после поворачивать экран телефона,
+    // проверять, что название статьи не изменилось
+    @Test
+    public void testChangeScreenOrientationOnSearchResults(){
+        driver.findElementByXPath("//*[@text='Skip']").click();
+
+        //поиска строки элемента и клика
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        String search_line = "java";
+
+        //поиск элемента и отправки значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                search_line,
+                "Cannot find search input",
+                5
+        );
+        //находим статью
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                "Cannot find 'Object-oriented programming language' topic searching by" +search_line,
+                5
+        );
+        //получаем название заголовок статьи до ротации, чтобы в дальнейшем ее сравнить после ротации экрана
+        //аттрибут (текст), который будем получать, запишем в переменную
+        String title_before_rotation = waitForElementAndGetAttribute(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "text",
+                "Cannot find title of Article",
+                15
+        );
+        //повернуть телефон,в скобках указываем в какую сторону хотим повернуть альбомная- горизонт или портретная- вертик
+        driver.rotate(ScreenOrientation.LANDSCAPE);
+
+        //снова получаем значение названия статьи
+        String title_after_rotation = waitForElementAndGetAttribute(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "text",
+                "Cannot find title of Article",
+                15
+        );
+        //Сравниваем два значения
+        Assert.assertEquals(
+                "Article title have been changed after rotation",
+                title_before_rotation,
+                title_after_rotation
+        );
+        //сделаем еще одну ротацию
+        driver.rotate(ScreenOrientation.PORTRAIT);
+
+        //снова получаем значение названия статьи после ротации
+        String title_after_second_rotation = waitForElementAndGetAttribute(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "text",
+                "Cannot find title of Article",
+                15
+        );
+
+        // сравниваем два значения
+        Assert.assertEquals(
+                "Article title have been changed after rotation",
+                title_before_rotation,
+                title_after_second_rotation
+        );
+
+
+    }
+
+    //метод получения заголовка статьи
+    private String waitForElementAndGetAttribute(By by, String attribute, String error_message, long timeoutInSeconds ){
+        WebElement element = waitForElementPresent(by, error_message,timeoutInSeconds);
+        return element.getAttribute(attribute);
 
     }
 
