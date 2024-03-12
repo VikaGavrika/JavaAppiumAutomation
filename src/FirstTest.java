@@ -332,10 +332,13 @@ public class FirstTest extends CoreTestCase {
                 "Cannot find button Add to list",
                 5
         );
-        //В появившемся мод окне ввести название списка в поле ввода
+        //В появившемся мод окне в поле ввода ввести название списка, в этот список будем сохранять статью
+        //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
+        String name_of_folder = "articles";
+
         waitForElementAndSendKeys(
                 By.xpath("//*[@resource-id=\"org.wikipedia:id/text_input\"]"),
-                "article1",
+                name_of_folder,
                 "Cannot put text into articles folder input",
                 5
         );
@@ -368,40 +371,22 @@ public class FirstTest extends CoreTestCase {
                 "Cannot find navigation Saved button to My list",
                 5
         );
-        //поиск статьи по названию. клик на статью
+        //поиск списка статей по названию, название задано в переменную выше. клик на список статей
         waitForElementAndClick(
-                By.xpath("//*[@text=\"article1\"]"),
+                By.xpath("//*[@text='"+name_of_folder+"']"),
                 "Cannot find article into My list",
                 5
         );
-        //нажать на кнопку с выпадающим списком
-        waitForElementAndClick(
-                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
-                "Cannot find button to open article options when we try to remove article",
-                5
-        );
-        //поиск в списке кнопки remove удаления всех стаей
-        waitForElementAndClick(
-                By.xpath("//*[@text=\"Remove all from offline\"]"),
-                "Cannot find text Remove",
-                5
-        );
-        //поиск заголовка нужной статьи
-        waitForElementPresent(
-                By.xpath("//*[@text='article1']"),
-                "Cannot find article title",
+        //удаление статьи свайпом влево
+        leftSwipe (200,826,977,92,941);
+
+
+        //убеждаемся, что нужной статьи нет в списке
+        waitForElementNotPresent(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "Cannot delete saved article",
                 15
         );
-
-
-
-
-
-
-
-
-
-
 
     }
 
@@ -617,7 +602,35 @@ public class FirstTest extends CoreTestCase {
 
         }
     }
+    public void leftSwipe(int timeOfSwipe, int startX, int startY, int endX,int endY) {
+        try {
+            //создаем PointerInput
+            PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+            //создаем последовательность действий
+            Sequence swipe = new Sequence(finger, 1);
+            System.out.println("Начинаю свайп влево...");
+            swipe.addAction(finger.createPointerMove(Duration.ofMillis(timeOfSwipe),
+                    PointerInput.Origin.viewport(), startX, startY));
+            //Палец прикасается к экрану
+            swipe.addAction(finger.createPointerDown(0));
 
+            //Палец двигается к конечной точке
+            swipe.addAction(finger.createPointerMove(Duration.ofMillis(timeOfSwipe),
+                    PointerInput.Origin.viewport(), endX, endY));
+
+            //Убираем палец с экрана
+            swipe.addAction(finger.createPointerUp(0));
+
+            //Выполняем действия
+            driver.perform(Arrays.asList(swipe));
+
+            System.out.println("Свайп влево выполнен успешно!");
+        } catch (Exception e) {
+            // Обработка исключения
+            System.out.println("Ошибка при свайпе влево: " + e.getMessage());
+
+        }
+    }
 
 }
 
