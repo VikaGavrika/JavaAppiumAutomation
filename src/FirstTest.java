@@ -543,6 +543,10 @@ public class FirstTest extends CoreTestCase {
                 title_before_rotation,
                 title_after_second_rotation
         );
+        //еще раз перевернем, чтобы проверить, вернет ли метод экран в портретную ориентацию
+        driver.rotate(ScreenOrientation.LANDSCAPE);
+        //переворот экрана в вертикальную ориентацию, кроме случаев, когда уже в вертикальной ориентации
+        resetScreenOrientation();
 
     }
 
@@ -826,6 +830,15 @@ public class FirstTest extends CoreTestCase {
         assertElementPresent(By.xpath("//*[@text=\"Appium\"]"));
 
 
+    }
+
+    //метод, который делает экран всегда в портретной ориентации после завершения теста.
+    public void resetScreenOrientation() {
+        try {
+            driver.rotate(ScreenOrientation.PORTRAIT);
+        } catch (Exception e) {
+            // Исключение, если телефон уже в портретной ориентации
+        }
     }
 
     private void assertElementPresent(By by){
