@@ -1,7 +1,6 @@
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
-import lib.CoreTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -39,7 +38,7 @@ public class FirstTest extends CoreTestCase {
                 5
         );
 
-        //метод проверяющий,что поиск по значению "Java" работает корректно и находится нужная строчка а теме "Java"
+        //метод проверяющий, что поиск по значению "Java" работает корректно и находится нужная строчка а теме "Java"
         waitForElementPresent(
                 By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
                 "Cannot find 'Object-oriented programming language' topic searching by 'Java'",
@@ -233,6 +232,7 @@ public class FirstTest extends CoreTestCase {
     }
 
     //тест, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
+    @Test
     public void testSearchTextAndCheckTextInTitles() {
         //Смахиваем онбординг
         driver.findElementByXPath("//*[@text='Skip']").click();
@@ -265,6 +265,7 @@ public class FirstTest extends CoreTestCase {
     // нажать ОК, выйти из статьи, нажать на кнопку списки, перейти на экран со спискими, выбрать один их них, нажать,
     // убедиться что в списке присутствует выбранная статья, удалить статью,
     // убедиться, что она удалена, тест будет считаться законченным
+    @Test
     public void testSavedFirstArticleToMyList(){
         driver.findElementByXPath("//*[@text='Skip']").click();
 
@@ -376,7 +377,7 @@ public class FirstTest extends CoreTestCase {
         //поиск списка статей по названию, название задано в переменную выше. клик на список статей
         waitForElementAndClick(
                 By.xpath("//*[@text='"+name_of_folder+"']"),
-                "Cannot find article into My list",
+                "Cannot find folder articles into My list",
                 5
         );
         //удаление статьи свайпом влево
@@ -584,6 +585,216 @@ public class FirstTest extends CoreTestCase {
         );
 
     }
+    //Tecт13, сохранить две статьи в список, одну статью удалить, убелиться, что вторая статья осталась,
+    // зайти в нее и сравнить заголовки
+    @Test
+    public void testSavedTwoArticleToMyList() {
+        driver.findElementByXPath("//*[@text='Skip']").click();
+
+        // поиск элемента, затем кликаем по полю поиска
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        String search_line = "Java";
+        //поиск первой статьи, отправка значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                search_line,
+                "Cannot find search input",
+                5
+        );
+        //поиск нужной статьи и клик
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                "Cannot find article in results list",
+                5
+
+        );
+        //получаем значение названия статьи
+        String title_first_article = waitForElementAndGetAttribute(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "text",
+                "Cannot find title of Article",
+                15
+        );
+
+        //нажать на кнопку с выпадающим списком
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
+                "Cannot find button to open article options",
+                5
+        );
+        //необходимо настроить тулбар, чтобы в меню появилась кнопка Save
+        //нажать на кнопку настроек тулбара
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/customize_toolbar\"]"),
+                "Cannot find button to open customize_toolbar",
+                5
+        );
+
+        //перенос элемента по координатам из категории тулбар в категорию меню
+        moveButton(200, 1010, 693, 1005, 1748);
+
+        //возврат к статье, нажав Назад
+        waitForElementAndClick(
+                By.xpath("//*[@content-desc='Navigate up']"),
+                "Cannot find back-button to cancel search",
+                5
+        );
+        //снова нажать на кнопку с выпадающим списком
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
+                "Cannot find button to open article options",
+                5
+        );
+        //нажать на кнопку Save в выпадающем списке
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]"),
+                "Cannot find options to add article to reading list",
+                5
+        );
+        //в появившимся снэк-баре нажать кнопку добавления в список
+        waitForElementAndClick(
+                By.xpath("//*[@text=\"Add to list\"]"),
+                "Cannot find button Add to list",
+                5
+        );
+        //В появившемся мод окне в поле ввода ввести название списка, в этот список будем сохранять статью
+        //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
+        String name_of_folder = "articles";
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id=\"org.wikipedia:id/text_input\"]"),
+                name_of_folder,
+                "Cannot put text into articles folder input",
+                5
+        );
+        //нажать на кнопку ОК
+        waitForElementAndClick(
+                By.xpath("//*[@text=\"OK\"]"),
+                "Cannot press ОК button",
+                5
+
+        );
+        //поиск элемента строки поиска и клик по полю
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        String search_second_line = "Appium";
+        //поиск второй статьи, отправка значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                search_second_line,
+                "Cannot find search input",
+                5
+        );
+        //кликаем на нужную статью
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id=\"org.wikipedia:id/page_list_item_title\" and @text=\"Appium\"]"),
+                "Cannot find search input",
+                5
+
+        );
+        //получаем заголовок второй статьи
+
+        String title_second_article= waitForElementAndGetAttribute(
+                By.xpath("//*[@text=\"Appium\"]"),
+                "text",
+                "Cannot get title of Article",
+                15
+        );
+        //нажать на кнопку с выпадающим списком
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
+                "Cannot find button to open article options",
+                5
+        );
+        //нажать на кнопку Save в выпадающем списке
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]"),
+                "Cannot find options to add article to reading list",
+                5
+        );
+        //в появившимся снэк-баре нажать кнопку добавления в список
+        waitForElementAndClick(
+                By.xpath("//*[@text=\"Add to list\"]"),
+                "Cannot find button Add to list",
+                5
+        );
+        //в открывшемся батоншите списков найти нужный список и кликнуть
+        waitForElementAndClick(
+                By.xpath("//*[@text='"+name_of_folder+"']"),
+                "Cannot find folder articles into My list",
+                5
+        );
+        //нажать на кнопку в снэк баре View list
+        waitForElementAndClick(
+                By.xpath("//*[@text=\"View list\"]"),
+                "Cannot press View list button",
+                5
+        );
+        //убеждаемся, что есть заголовок первой статьи в открывшемся списке
+        waitForElementPresent(
+                By.xpath("//*[@text='"+ title_first_article +"']"),
+                "Cannot find folder articles into My list",
+                5
+        );
+        //Выводим в консоль название
+        System.out.println("Найден " + title_first_article + " элемент с текстом.");
+
+
+        //убеждаемся что есть вторая статья в открывшемся списке
+        waitForElementPresent(
+                By.xpath("//*[@text='"+ title_second_article +"']"),
+                "Cannot find folder articles into My list",
+                5
+        );
+        //Выводим в консоль название
+        System.out.println("Найден " + title_second_article + " элемент с текстом.");
+
+        //удаление второй статьи свайпом влево
+        leftSwipe (200,831,1010,216,1023);
+
+
+        //убеждаемся, что нет второй статьи в открывшемся списке
+        waitForElementNotPresent(
+                By.xpath("//*[@text='"+ title_second_article +"']"),
+                "Cannot find title article into My list",
+                5
+        );
+        //убеждаемся, что есть первая статья в открывшемся списке есть и кликаем на нее
+        waitForElementAndClick(
+                By.xpath("//*[@text='"+ title_first_article +"']"),
+                "Cannot find folder articles into My list",
+                5
+        );
+        //Выводим в консоль название
+        System.out.println("Найден " + title_first_article + " элемент с текстом после изменений в списке.");
+
+        //снова получаем значение названия статьи
+        String title_first_article_after_list_change = waitForElementAndGetAttribute(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "text",
+                "Cannot find title of Article",
+                15
+        );
+        //yбеждаемся, что заголовок в первой статье совпадает
+        //Сравниваем два значения
+        Assert.assertEquals(
+                "Article title have been changed after rotation",
+                title_first_article,
+                title_first_article_after_list_change
+        );
+
+
+    }
+
 
 
 
