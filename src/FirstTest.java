@@ -794,6 +794,49 @@ public class FirstTest extends CoreTestCase {
 
 
     }
+    //Тест14 тест, который открывает статью и убеждается, что у нее есть элемент title.  тест не должен
+    // дожидаться появления title, проверка должна производиться сразу. Если title не найден - тест падает с ошибкой.
+    @Test
+    public void testAssertTitle() {
+        driver.findElementByXPath("//*[@text='Skip']").click();
+
+        // поиск элемента, затем кликаем по полю поиска
+        waitForElementAndClick(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                "Cannot find search input",
+                5
+
+        );
+        String search_second_line = "Appium";
+        //поиск второй статьи, отправка значения в поле поиска
+        waitForElementAndSendKeys(
+                By.xpath("//*[@text='Search Wikipedia']"),
+                search_second_line,
+                "Cannot find search input",
+                5
+        );
+        //кликаем на нужную статью
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id=\"org.wikipedia:id/page_list_item_title\" and @text=\"Appium\"]"),
+                "Cannot find search input",
+                5
+        );
+
+        // Проверяем, что у статьи есть элемент title
+        assertElementPresent(By.xpath("//*[@text=\"Appium\"]"));
+
+
+    }
+
+    private void assertElementPresent(By by){
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        WebElement titleElement = wait.until(ExpectedConditions.presenceOfElementLocated(by));
+        //проверка, что элемент присутствует, не null
+        Assert.assertNotNull("Cannot find element", titleElement);
+        // Проверка, что элемент отображается
+        Assert.assertTrue("Element is not displayed", titleElement.isDisplayed());
+
+    }
 
 
 
