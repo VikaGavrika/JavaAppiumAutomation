@@ -17,7 +17,7 @@ public class FirstTest extends CoreTestCase {
         super.setUp();
         MainPageObject = new MainPageObject(driver);
     }
-
+    //Тест1. Поиск
     @Test
     public void testSearch() throws InterruptedException {
         driver.findElementByXPath("//*[@text='Skip']").click();
@@ -31,43 +31,23 @@ public class FirstTest extends CoreTestCase {
         SearchPageObject.waitForSearchResult("Object-oriented programming language");
 
     }
-
+    //Тест2. Отменяет поиск
     @Test
     public void testCanselSearch() {
         //Смахиваем онбординг
         driver.findElementByXPath("//*[@text='Skip']").click();
-        //дожидаемся элемента строка поиска и кликаем по нему
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find search input",
-                5
-        );
-        //вводим значение в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Java",
-                "Cannot find search input",
-                5
-        );
-        //очищаем поле поиска
-        MainPageObject.waitForElementAndClear(
-                By.id("org.wikipedia:id/search_src_text"),
-                "Cannot find search field",
-                5
-        );
 
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInput();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Java");
+        SearchPageObject.waitForCancelButtonToAppear();
         //дожидаемся кнопки возврата и кликаем по ней
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@content-desc='Navigate up']"),
-                "Cannot find back-button to cancel search",
-                5
-        );
-        //Метод, который проверяет,что после нажатия "Назад", мы вернулись на страницу, где нет элемента стрелки "назад"
-        MainPageObject.waitForElementNotPresent(
-                By.xpath("//*[@content-desc='Navigate up']"),
-                "Cannot find back-button to cancel search",
-                5
-        );
+        SearchPageObject.clickCancelSearch();
+        //Метод, который проверяет, что после нажатия "Назад", мы вернулись на страницу, где нет элемента стрелки "назад"
+        SearchPageObject.waitForCancelButtonToDisappear();
+
 
     }
 

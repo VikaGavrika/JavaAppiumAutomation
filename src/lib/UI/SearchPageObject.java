@@ -17,6 +17,10 @@ public class SearchPageObject extends  MainPageObject {
             //в константу будет подставляться нужная подстрока
             //TPL метод шаблона. Заменяем какое-то значение по шаблону
             SEARCH_REASULT_BY_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='{SUBSTRING}']";
+    private static final String
+            //локатор кнопки возврата
+            SEARCH_CANCEL_BUTTON = "//*[@content-desc='Navigate up']";
+
 
     /*TEMPLATES METHODS */
     //метод, который подставляет подстроку по шаблону
@@ -46,6 +50,19 @@ public class SearchPageObject extends  MainPageObject {
     public void waitForSearchResult (String substring){
         String search_result_xpath = getResultSearchElement(substring);
         this.waitForElementPresent(By.xpath(search_result_xpath),"Cannot find search result with substring" +substring);
+    }
+
+    //метод, который будет искать кнопку возврата
+    public void waitForCancelButtonToAppear(){
+        this.waitForElementPresent(By.xpath(SEARCH_CANCEL_BUTTON), "Cannot find search cancel button",5);
+    }
+    //метод, который будет ожидать отсутствие этой кнопки по окончанию теста
+    public void waitForCancelButtonToDisappear(){
+        this.waitForElementNotPresent(By.xpath(SEARCH_CANCEL_BUTTON), "Search cancel button is still present",5);
+    }
+    //клик по кнопку возврата
+    public void clickCancelSearch(){
+        this.waitForElementAndClick(By.xpath(SEARCH_CANCEL_BUTTON), "Cannot find and click search cancel button",5);
     }
 
 
