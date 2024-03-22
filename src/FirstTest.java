@@ -1,4 +1,5 @@
 import lib.CoreTestCase;
+import lib.UI.ArticlePageObject;
 import lib.UI.MainPageObject;
 import lib.UI.SearchPageObject;
 import org.junit.Assert;
@@ -50,40 +51,27 @@ public class FirstTest extends CoreTestCase {
 
 
     }
-
+    //Тест3 Сравнить название статьи
     @Test
     public void testCompareArticleTitle() {
         driver.findElementByXPath("//*[@text='Skip']").click();
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInput();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Java");
+        //Поиск элемента и клик по нему
+        SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
 
-        // поиск элемента, затем кликаем по полю поиска
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
-
-        );
-        //поиск элемента и отправки значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Java",
-                "Cannot find search input",
-                5
-        );
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
-                "Cannot find search input",
-                5
-
-        );
+        //используем новый метод. инициализация
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
         //поиск заголовка нужной статьи
-        WebElement title_element = MainPageObject.waitForElementPresent(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "Cannot find article title",
-                15
-        );
-        //получаем название статьи, текст этой статьи
-        String article_title = title_element.getAttribute("text");
-        //использвем это название статьи для сравнения
+        ArticlePageObject.waitForTitleElement("Object-oriented programming language");
+        //получаем название статьи, текст этой статьи и записываем ее в переменную
+        String article_title = ArticlePageObject.getArticleTitle("Java (programming language)");
+
+        //используем это название статьи для сравнения
         assertEquals(
                 "We see unexpected title",
                 "Java (programming language)",
@@ -92,43 +80,24 @@ public class FirstTest extends CoreTestCase {
 
     }
 
-    //Тест, свайп до конца страницы до текста в футере
+    //Тест4, свайп до конца страницы до текста в футере
     @Test
     public void testSwipeArticle() {
         driver.findElementByXPath("//*[@text='Skip']").click();
-
-        // поиск элемента, затем кликаем по полю поиска
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
-
-        );
-        //поиск элемента и отправки значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "appium",
-                "Cannot find search input",
-                5
-        );
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id=\"org.wikipedia:id/page_list_item_title\" and @text=\"Appium\"]"),
-                "Cannot find search input",
-                5
-
-        );
-        //поиск заголовка нужной статьи
-        MainPageObject.waitForElementPresent(
-                By.xpath("//*[@text=\"Automation for Apps\"]"),
-                "Cannot find article title",
-                15
-        );
-        //swipeQuick();
-        MainPageObject.verticalSwipeToFindElement(
-                By.xpath("//*[@text=\"View article in browser\"]"),
-               "Cannot find the end of the article",
-                6
-        );
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInput();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("appium");
+        //Поиск элемента и клик по нему
+        SearchPageObject.clickByArticleWithSubstring("Appium");
+        //используем новый метод. инициализация
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        //поиск заголовка нужной статьи, ждем появления названия
+        ArticlePageObject.waitForTitleElement("Automation for Apps");
+        //swipe
+        ArticlePageObject.swipeToFooter();
 
     }
 

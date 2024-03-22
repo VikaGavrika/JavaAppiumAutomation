@@ -14,9 +14,10 @@ public class SearchPageObject extends  MainPageObject {
             SEARCH_INPUT = "//*[@text='Search Wikipedia']";
 
     private static final String
-            //в константу будет подставляться нужная подстрока
+            //в константу будет подставляться нужная подстрока  для Java
             //TPL метод шаблона. Заменяем какое-то значение по шаблону
             SEARCH_REASULT_BY_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='{SUBSTRING}']";
+
     private static final String
             //локатор кнопки возврата
             SEARCH_CANCEL_BUTTON = "//*[@content-desc='Navigate up']";
@@ -50,6 +51,11 @@ public class SearchPageObject extends  MainPageObject {
     public void waitForSearchResult (String substring){
         String search_result_xpath = getResultSearchElement(substring);
         this.waitForElementPresent(By.xpath(search_result_xpath),"Cannot find search result with substring" +substring);
+    }
+
+    public void clickByArticleWithSubstring (String substring){
+        String search_result_xpath = getResultSearchElement(substring);
+        this.waitForElementAndClick(By.xpath(search_result_xpath),"Cannot find and click search result with substring" +substring, 10);
     }
 
     //метод, который будет искать кнопку возврата
