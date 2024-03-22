@@ -10,6 +10,24 @@ public class ArticlePageObject extends MainPageObject{
             TITLE_TPL = "//*[@text=\"{SUBSTRING}\"]";
     private static final String
             FOOTER_ELEMENT = "//*[@text=\"View article in browser\"]";
+    private static final String
+            OPTIONS_BUTTON = "//android.widget.ImageView[@content-desc=\"More options\"]";
+    private static final String
+            TOOLBAR_BUTTON = "//android.widget.TextView[@resource-id=\"org.wikipedia:id/customize_toolbar\"]";
+    private static final String
+            NAVIGATE_BUTTON = "//*[@content-desc='Navigate up']";
+    private static final String
+            SAVE_BUTTON = "//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]";
+    private static final String
+            OPTIONS_ADD_TO_MY_LIST_BUTTON = "//*[@text=\"Add to list\"]";
+    private static final String
+            MY_LIST_NAME_INPUT = "//*[@resource-id=\"org.wikipedia:id/text_input\"]";
+    private static final String
+            MY_LIST_OK_BUTTON = "//*[@text=\"OK\"]";
+    private static final String
+            OPTIONS_VIEW_LIST_BUTTON = "//*[@text=\"View list\"]";
+
+
 
 
     //инициализация драйвера
@@ -26,8 +44,8 @@ public class ArticlePageObject extends MainPageObject{
 
     //метод ожидания статьи
     public WebElement waitForTitleElement(String substring){
-        String search_result_xpath = getResultTitleElement(substring);
-        return this.waitForElementPresent(By.xpath(search_result_xpath),"Cannot find article title",15);
+        String title_Element_xpath = getResultTitleElement(substring);
+        return this.waitForElementPresent(By.xpath(title_Element_xpath),"Cannot find article title",15);
 
     }
     //метод в котором будем получать название статьи
@@ -44,5 +62,82 @@ public class ArticlePageObject extends MainPageObject{
                 20
         );
     }
+    //метод с шагами, которые добавляют статью в список статей
+    public void addArticleToMyList(String name_of_folder){
+        //делаем переменные для каждого из элемента, так их будет проще менять
+
+
+        //нажать на кнопку с выпадающим списком
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_BUTTON),
+                "Cannot find button to open article options",
+                5
+        );
+        //нажать на кнопку настроек тулбара
+        this.waitForElementAndClick(
+                By.xpath(TOOLBAR_BUTTON),
+                "Cannot find button to open customize_toolbar",
+                5
+        );
+
+        //перенос кнопки элемента по координатам
+        this.moveButton (200,1010,693,1005,1748);
+
+        //возврат к статье, нажав Назад
+        this.waitForElementAndClick(
+                By.xpath(NAVIGATE_BUTTON),
+                "Cannot find back-button to cancel search",
+                5
+        );
+        //снова нажать на кнопку с выпадающим списком
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_BUTTON),
+                "Cannot find button to open article options",
+                5
+        );
+        //нажать на кнопку Save в выпадающем списке
+        this.waitForElementAndClick(
+                By.xpath(SAVE_BUTTON),
+                "Cannot find options to add article to reading list",
+                5
+        );
+        //в появившимся снэк-баре нажать кнопку добавления в список
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_ADD_TO_MY_LIST_BUTTON),
+                "Cannot find button Add to list",
+                5
+        );
+
+        this.waitForElementAndSendKeys(
+                By.xpath(MY_LIST_NAME_INPUT),
+                name_of_folder,
+                "Cannot put text into articles folder input",
+                5
+        );
+        //нажать на кнопку ОК
+        this.waitForElementAndClick(
+                By.xpath(MY_LIST_OK_BUTTON),
+                "Cannot press ОК button",
+                5
+        );
+        //нажать на кнопку в снэк баре View list
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_VIEW_LIST_BUTTON),
+                "Cannot press View list button",
+                5
+        );
+
+
+    }
+    //метод закрытия
+    public void closeArticle(){
+        this.waitForElementAndClick(
+                By.xpath(NAVIGATE_BUTTON),
+                "Cannot find back-button to cancel search",
+                5
+        );
+    }
+
+
 
 }

@@ -1,7 +1,5 @@
 import lib.CoreTestCase;
-import lib.UI.ArticlePageObject;
-import lib.UI.MainPageObject;
-import lib.UI.SearchPageObject;
+import lib.UI.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -62,12 +60,12 @@ public class FirstTest extends CoreTestCase {
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
-        SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
+        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
         //используем новый метод. инициализация
         ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
         //поиск заголовка нужной статьи
-        ArticlePageObject.waitForTitleElement("Object-oriented programming language");
+        ArticlePageObject.waitForTitleElement("Java (programming language)");
         //получаем название статьи, текст этой статьи и записываем ее в переменную
         String article_title = ArticlePageObject.getArticleTitle("Java (programming language)");
 
@@ -102,7 +100,7 @@ public class FirstTest extends CoreTestCase {
     }
 
 
-    //тест, который проверяет, что поле ввода для поиска статьи содержит текст Search Wikipedia
+    //тест5, который проверяет, что поле ввода для поиска статьи содержит текст Search Wikipedia
     @Test
     public void testSearchInputHasText() {
         driver.findElementByXPath("//*[@text='Skip']").click();
@@ -119,7 +117,7 @@ public class FirstTest extends CoreTestCase {
 
     }
 
-    //Тест, который делает поиск по какому-то слову. Затем убеждается, найдены несколько статей со словом в листе результатов,
+    //Тест6, который делает поиск по какому-то слову. Затем убеждается, найдены несколько статей со словом в листе результатов,
     // затем удаляет результаты поиска и убеждается что лист с результатами пуст
     @Test
     public void testSearchAndCanselSearch() {
@@ -165,7 +163,7 @@ public class FirstTest extends CoreTestCase {
 
     }
 
-    //тест, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
+    //тест7, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
     @Test
     public void testSearchTextAndCheckTextInTitles() {
         //Смахиваем онбординг
@@ -194,7 +192,7 @@ public class FirstTest extends CoreTestCase {
         MainPageObject.assertMultipleSearchResultsWithText(resultsList, expectedText);
 
     }
-    //Поиск определенной статьи, выбрать статью, нажать на кнопку с выпадающем списком, после открытия выбрать
+    //Тест8. Поиск определенной статьи, выбрать статью, нажать на кнопку с выпадающем списком, после открытия выбрать
     // и нажать на кнопку из списка, в батоншите создать новый список (нажав на кнопку), ввести название списка в поле,
     // нажать ОК, выйти из статьи, нажать на кнопку списки, перейти на экран со спискими, выбрать один их них, нажать,
     // убедиться что в списке присутствует выбранная статья, удалить статью,
@@ -203,130 +201,51 @@ public class FirstTest extends CoreTestCase {
     public void testSavedFirstArticleToMyList(){
         driver.findElementByXPath("//*[@text='Skip']").click();
 
-        // поиск элемента, затем кликаем по полю поиска
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
-
-        );
-        //поиск элемента и отправки значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Java",
-                "Cannot find search input",
-                5
-        );
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
-                "Cannot find search input",
-                5
-
-        );
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInput();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Java");
+        //Поиск элемента и клик по нему
+        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        //Работа с заголовком статьи. Инициализация
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
         //поиск заголовка нужной статьи
-        MainPageObject.waitForElementPresent(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "Cannot find article title",
-                15
-        );
-        //нажать на кнопку с выпадающим списком
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
-                "Cannot find button to open article options",
-                5
-        );
-        //нажать на кнопку настроек тулбара
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/customize_toolbar\"]"),
-                "Cannot find button to open customize_toolbar",
-                5
-        );
-
-        //перенос кнопки элемента по координатам
-        MainPageObject.moveButton (200,1010,693,1005,1748);
-
-        //возврат к статье, нажав Назад
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@content-desc='Navigate up']"),
-                "Cannot find back-button to cancel search",
-                5
-        );
-        //снова нажать на кнопку с выпадающим списком
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
-                "Cannot find button to open article options",
-                5
-        );
-        //нажать на кнопку Save в выпадающем списке
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]"),
-                "Cannot find options to add article to reading list",
-                5
-        );
-        //в появившимся снэк-баре нажать кнопку добавления в список
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text=\"Add to list\"]"),
-                "Cannot find button Add to list",
-                5
-        );
-        //В появившемся мод окне в поле ввода ввести название списка, в этот список будем сохранять статью
+        ArticlePageObject.waitForTitleElement("Java (programming language)");
+        //делаем отдельную переменную для названия статьи
+        String article_title = ArticlePageObject.getArticleTitle("Java (programming language)");
         //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
         String name_of_folder = "articles";
-
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@resource-id=\"org.wikipedia:id/text_input\"]"),
-                name_of_folder,
-                "Cannot put text into articles folder input",
-                5
-        );
-        //нажать на кнопку ОК
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text=\"OK\"]"),
-                "Cannot press ОК button",
-                5
-        );
-        //нажать на кнопку в снэк баре View list
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text=\"View list\"]"),
-                "Cannot press View list button",
-                5
-        );
+        // добавляем статью в список статей
+        ArticlePageObject.addArticleToMyList(name_of_folder);
         //нажать кнопку назад 3 раза, чтобы вернуться на главную страницу
         //цикл, повторяем код, пока не будет выполнено определенное условие.
         int i = 0;
         while (i < 3) {
-            MainPageObject.waitForElementAndClick(
-                    By.xpath("//*[@content-desc='Navigate up']"),
-                    "Cannot find back-button to cancel search",
-                    5
-            );
+           ArticlePageObject.closeArticle();
             i++;
         }
-        //кнопка Saved в меню
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.FrameLayout[@content-desc=\"Saved\"]"),
-                "Cannot find navigation Saved button to My list",
-                5
-        );
+        //инициализация навигация по приложению
+        NavigationUI NavigationUI = new NavigationUI(driver);
+        //нажать кнопку Save в меню
+        NavigationUI.clickMyLists();
+
+        //инициализация объектов в списке My list
+        MyListPageObject MyListPageObject = new MyListPageObject(driver);
         //поиск списка статей по названию, название задано в переменную выше. клик на список статей
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='"+name_of_folder+"']"),
-                "Cannot find folder articles into My list",
-                5
-        );
+        MyListPageObject.openFolderByName(name_of_folder);
+
         //удаление статьи свайпом влево
-        MainPageObject.leftSwipe (200,826,977,92,941);
-
-
+        MyListPageObject.swipeByArticleToDelete(article_title);
         //убеждаемся, что нужной статьи нет в списке
-        MainPageObject.waitForElementNotPresent(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "Cannot delete saved article",
-                15
-        );
+        MyListPageObject.waitForArticleToDisappearByTitle(article_title);
 
     }
-    //Тест, которой ищет какую-то конкретную статью, а затем проверяет, что вышел 1 результат с этой статьей
+
+
+
+    //Тест9, которой ищет какую-то конкретную статью, а затем проверяет, что вышел 1 результат с этой статьей
     @Test
     public void testAmountOfNotEmptySearch(){
         driver.findElementByXPath("//*[@text='Skip']").click();
