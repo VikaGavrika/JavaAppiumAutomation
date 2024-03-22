@@ -244,40 +244,21 @@ public class FirstTest extends CoreTestCase {
     }
 
 
-
     //Тест9, которой ищет какую-то конкретную статью, а затем проверяет, что вышел 1 результат с этой статьей
     @Test
     public void testAmountOfNotEmptySearch(){
         driver.findElementByXPath("//*[@text='Skip']").click();
-
-        // поиск элемента, затем кликаем по полю поиска
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
-
-        );
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInput();
         //Зададим переменную, название статьи
         String search_line = "Linkin Park discography";
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine(search_line);
+        //выдает кол-во статей
+        int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
 
-        //поиск элемента и отправки значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                search_line,
-                "Cannot find search input",
-                5
-        );
-        //задаем переменную, которые будем исп-ть неск раз
-        String search_results_locator = "//*[@resource-id=\"org.wikipedia:id/search_results_list\"]/android.view.ViewGroup";
-        //поиск элемента
-        MainPageObject.waitForElementPresent(
-                By.xpath(search_results_locator),
-                "Cannot find anything by the request " +search_line,
-                15
-        );
-        int amount_of_search_results = MainPageObject.getAmountOfElements(
-                By.xpath(search_results_locator)
-        );
         //убеждаемся, что кол-во полученных элементов больше нуля
         Assert.assertTrue(
                 "We found too few results",
@@ -292,41 +273,20 @@ public class FirstTest extends CoreTestCase {
     public void testAmountOfEmptySearch(){
         driver.findElementByXPath("//*[@text='Skip']").click();
 
-        // поиск элемента, затем кликаем по полю поиска
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
-
-        );
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInput();
         //Зададим переменную, название статьи
         String search_line = "ppppppppppp";
-
-        //поиск элемента и отправки значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                search_line,
-                "Cannot find search input",
-                5
-        );
-        //задаем переменную, которые будем исп-ть неск раз
-        String search_results_locator = "//*[@resource-id=\"org.wikipedia:id/search_results_list\"]/android.view.ViewGroup";
-        //создаем локатор, в котором будем искать текст No results
-        String empty_result = "//*[@text = 'No results']";
-        //поиск элемента
-        MainPageObject.waitForElementPresent(
-                By.xpath(empty_result),
-                "Cannot find empty result label by the request " +search_line,
-                15
-
-        );
-        MainPageObject.assertNoElementsPresentWithText(
-                By.xpath(search_results_locator),
-                search_line,
-                "We've found some results by request" + search_line
-        );
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine(search_line);
+        //подтверждаем, что на странице нет результатов
+        SearchPageObject.assertThereIsNoResultOfSearch(search_line);
 
     }
+
+
     //Тест11, который вводит значение в поиск, выбирает статью, после поворачивать экран телефона,
     // проверять, что название статьи не изменилось
     @Test

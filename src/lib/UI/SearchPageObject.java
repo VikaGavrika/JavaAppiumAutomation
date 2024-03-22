@@ -22,6 +22,12 @@ public class SearchPageObject extends  MainPageObject {
             //локатор кнопки возврата
             SEARCH_CANCEL_BUTTON = "//*[@content-desc='Navigate up']";
 
+    private static final String
+            SEARCH_RESULT_ELEMENT = "//*[@resource-id=\"org.wikipedia:id/search_results_list\"]/android.view.ViewGroup";
+
+    private static final String
+            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text = 'No results']";
+
 
     /*TEMPLATES METHODS */
     //метод, который подставляет подстроку по шаблону
@@ -70,6 +76,33 @@ public class SearchPageObject extends  MainPageObject {
     public void clickCancelSearch(){
         this.waitForElementAndClick(By.xpath(SEARCH_CANCEL_BUTTON), "Cannot find and click search cancel button",5);
     }
+
+    //метод, который выдает кол-во статей
+    public int getAmountOfFoundArticles(){
+        //поиск элемента
+        this.waitForElementPresent(
+                By.xpath(SEARCH_RESULT_ELEMENT),
+                "Cannot find anything by the request ",
+                15
+        );
+        //метод возвращал нам кол-во элементов по определенному xpath
+        return this.getAmountOfElements(By.xpath(SEARCH_RESULT_ELEMENT));
+
+    }
+    //подтверждаем, что на странице нет результатов
+    public void waitForEmptyResultsLabel(){
+        //поиск элемента
+        this.waitForElementPresent(By.xpath(SEARCH_EMPTY_RESULT_ELEMENT),"Cannot find empty result element", 15);
+
+    }
+    public void assertThereIsNoResultOfSearch(String search_line){
+        //подтверждаем, что на странице нет результатов
+        this.assertNoElementsPresentWithText(By.xpath(SEARCH_RESULT_ELEMENT), search_line, "We've found some results by request" + search_line);
+
+    }
+
+
+
 
 
 
