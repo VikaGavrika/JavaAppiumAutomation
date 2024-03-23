@@ -2,6 +2,7 @@ package lib.UI;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 //методы, которые будут использоваться для поиска
 //этот метод наследуется от MainPageObject
@@ -44,8 +45,15 @@ public class SearchPageObject extends  MainPageObject {
         //берем дравер из MainPageObject
         super(driver);
     }
+    public WebElement initSearchInput() {
+        this.waitForElementPresent(By.xpath(SEARCH_INPUT), "Cannot find search input after clicking search init element");
+        // Находим элемент
+        WebElement element = driver.findElement(By.xpath(SEARCH_INPUT));
+        // Возвращаем найденный элемент
+        return element;  // Вернуть найденный элемент
+    }
 
-    public void initSearchInput() {
+    public void initSearchInputAndClick() {
         this.waitForElementPresent(By.xpath(SEARCH_INPUT), "Cannot find search input after clicking search init element");
         this.waitForElementAndClick(By.xpath(SEARCH_INPUT), "Cannot find and click search init element", 5);
     }
@@ -100,10 +108,10 @@ public class SearchPageObject extends  MainPageObject {
         this.assertNoElementsPresentWithText(By.xpath(SEARCH_RESULT_ELEMENT), search_line, "We've found some results by request" + search_line);
 
     }
-
-
-
-
+    public void assertThereIsTextInSearchInput(WebElement element, String expectedText){
+        //подтверждаем, что в поле поиска есть текст
+        this.assertElementHasText(element, expectedText);
+    }
 
 
 }

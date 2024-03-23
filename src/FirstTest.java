@@ -15,12 +15,11 @@ public class FirstTest extends CoreTestCase {
 
     //Тест1. Поиск
     @Test
-    public void testSearch() throws InterruptedException {
-        driver.findElementByXPath("//*[@text='Skip']").click();
+    public void testSearch() {
 
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        SearchPageObject.initSearchInput();
+        SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //метод проверяющий, что поиск по значению "Java" работает корректно и находится нужная статья с нужным заголовком
@@ -30,12 +29,10 @@ public class FirstTest extends CoreTestCase {
     //Тест2. Отменяет поиск
     @Test
     public void testCanselSearch() {
-        //Смахиваем онбординг
-        driver.findElementByXPath("//*[@text='Skip']").click();
 
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        SearchPageObject.initSearchInput();
+        SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         SearchPageObject.waitForCancelButtonToAppear();
@@ -49,11 +46,11 @@ public class FirstTest extends CoreTestCase {
     //Тест3 Сравнить название статьи
     @Test
     public void testCompareArticleTitle() {
-        driver.findElementByXPath("//*[@text='Skip']").click();
+
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        SearchPageObject.initSearchInput();
+        SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
@@ -78,11 +75,11 @@ public class FirstTest extends CoreTestCase {
     //Тест4, свайп до конца страницы до текста в футере
     @Test
     public void testSwipeArticle() {
-        driver.findElementByXPath("//*[@text='Skip']").click();
+
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        SearchPageObject.initSearchInput();
+        SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("appium");
         //Поиск элемента и клик по нему
@@ -100,17 +97,14 @@ public class FirstTest extends CoreTestCase {
     //тест5, который проверяет, что поле ввода для поиска статьи содержит текст Search Wikipedia
     @Test
     public void testSearchInputHasText() {
-        driver.findElementByXPath("//*[@text='Skip']").click();
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиск поля поиска
-        WebElement inputElement = MainPageObject.waitForElementPresent(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
-        );
-
-        // Проверка текста
+        WebElement element = SearchPageObject.initSearchInput();
+        // Ожидаемый текст
         String expectedText = "Search Wikipedia";
-        MainPageObject.assertElementHasText(inputElement, expectedText);
+        // Проверка актуального текста и ожидаемого
+        SearchPageObject.assertThereIsTextInSearchInput(element, expectedText);
 
     }
 
@@ -118,8 +112,7 @@ public class FirstTest extends CoreTestCase {
     // затем удаляет результаты поиска и убеждается что лист с результатами пуст
     @Test
     public void testSearchAndCanselSearch() {
-        //Смахиваем онбординг
-        driver.findElementByXPath("//*[@text='Skip']").click();
+
         //дожидаемся элемента строка поиска и кликаем по нему
         MainPageObject.waitForElementAndClick(
                 By.id("org.wikipedia:id/search_container"),
@@ -163,8 +156,7 @@ public class FirstTest extends CoreTestCase {
     //Ex4. Тест7, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
     @Test
     public void testSearchTextAndCheckTextInTitles() {
-        //Смахиваем онбординг
-        driver.findElementByXPath("//*[@text='Skip']").click();
+
         //дожидаемся элемента строка поиска и кликаем по нему
         MainPageObject.waitForElementAndClick(
                 By.id("org.wikipedia:id/search_container"),
@@ -196,12 +188,12 @@ public class FirstTest extends CoreTestCase {
     // убедиться, что она удалена, тест будет считаться законченным
     @Test
     public void testSavedFirstArticleToMyList(){
-        driver.findElementByXPath("//*[@text='Skip']").click();
+
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        SearchPageObject.initSearchInput();
+        SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
@@ -245,11 +237,11 @@ public class FirstTest extends CoreTestCase {
     //Тест9, которой ищет какую-то конкретную статью, а затем проверяет, что вышел 1 результат с этой статьей
     @Test
     public void testAmountOfNotEmptySearch(){
-        driver.findElementByXPath("//*[@text='Skip']").click();
+
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        SearchPageObject.initSearchInput();
+        SearchPageObject.initSearchInputAndClick();
         //Зададим переменную, название статьи
         String search_line = "Linkin Park discography";
         //поиск элемента и отправки значения в поле
@@ -269,12 +261,11 @@ public class FirstTest extends CoreTestCase {
     // И есть элемент "нет результатов"
     @Test
     public void testAmountOfEmptySearch(){
-        driver.findElementByXPath("//*[@text='Skip']").click();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        SearchPageObject.initSearchInput();
+        SearchPageObject.initSearchInputAndClick();
         //Зададим переменную, название статьи
         String search_line = "ppppppppppp";
         //поиск элемента и отправки значения в поле
@@ -289,11 +280,11 @@ public class FirstTest extends CoreTestCase {
     // проверять, что название статьи не изменилось
     @Test
     public void testChangeScreenOrientationOnSearchResults(){
-        driver.findElementByXPath("//*[@text='Skip']").click();
+
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        SearchPageObject.initSearchInput();
+        SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
@@ -342,12 +333,11 @@ public class FirstTest extends CoreTestCase {
     // что элемент, остался на месте.
     @Test
     public void testCheckSearchArticleInBackground(){
-        driver.findElementByXPath("//*[@text='Skip']").click();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        SearchPageObject.initSearchInput();
+        SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента в результатах
@@ -368,7 +358,6 @@ public class FirstTest extends CoreTestCase {
     // зайти в нее и сравнить заголовки
     @Test
     public void testSavedTwoArticleToMyList() {
-        driver.findElementByXPath("//*[@text='Skip']").click();
 
         // поиск элемента, затем кликаем по полю поиска
         MainPageObject.waitForElementAndClick(
@@ -577,7 +566,6 @@ public class FirstTest extends CoreTestCase {
     // дожидаться появления title, проверка должна производиться сразу. Если title не найден - тест падает с ошибкой.
     @Test
     public void testAssertTitle() {
-        driver.findElementByXPath("//*[@text='Skip']").click();
 
         // поиск элемента, затем кликаем по полю поиска
         MainPageObject.waitForElementAndClick(

@@ -31,7 +31,10 @@ public class CoreTestCase extends TestCase {
 
 
         driver = new AndroidDriver(new URL(AppiumUrl), capabilities);
+        //переворачиваем телефон в вертик ориентацию в начале каждого теста
         this.resetScreenOrientation();
+        //Смахиваем онбординг в начале каждого теста
+        this.skipOnboarding();
 
 
     }
@@ -59,6 +62,9 @@ public class CoreTestCase extends TestCase {
         } catch (Exception e) {
             // Исключение, если телефон уже в портретной ориентации
         }
+    }
+    protected void skipOnboarding(){
+        driver.findElementByXPath("//*[@text='Skip']").click();
     }
 
 
