@@ -7,7 +7,6 @@ import io.appium.java_client.touch.offset.PointOption;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
@@ -28,14 +27,7 @@ public class MainPageObject {
         this.driver = driver;
     }
     //переносим все методы, которыми пользуются тесты
-    //метод, который делает экран всегда в портретной ориентации после завершения теста.
-    public void resetScreenOrientation() {
-        try {
-            driver.rotate(ScreenOrientation.PORTRAIT);
-        } catch (Exception e) {
-            // Исключение, если телефон уже в портретной ориентации
-        }
-    }
+
 
     public void assertElementPresent(By by){
         WebDriverWait wait = new WebDriverWait(driver, 5);

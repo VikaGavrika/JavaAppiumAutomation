@@ -1,12 +1,8 @@
 import lib.CoreTestCase;
 import lib.UI.*;
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
-
-import java.time.Duration;
 
 
 public class FirstTest extends CoreTestCase {
@@ -16,6 +12,7 @@ public class FirstTest extends CoreTestCase {
         super.setUp();
         MainPageObject = new MainPageObject(driver);
     }
+
     //Тест1. Поиск
     @Test
     public void testSearch() throws InterruptedException {
@@ -67,7 +64,7 @@ public class FirstTest extends CoreTestCase {
         //поиск заголовка нужной статьи
         ArticlePageObject.waitForTitleElement("Java (programming language)");
         //получаем название статьи, текст этой статьи и записываем ее в переменную
-        String article_title = ArticlePageObject.getArticleTitle("Java (programming language)");
+        String article_title = ArticlePageObject.getArticleTitle("Object-oriented programming language");
 
         //используем это название статьи для сравнения
         assertEquals(
@@ -117,7 +114,7 @@ public class FirstTest extends CoreTestCase {
 
     }
 
-    //Тест6, который делает поиск по какому-то слову. Затем убеждается, найдены несколько статей со словом в листе результатов,
+    //EX3. Тест6, который делает поиск по какому-то слову. Затем убеждается, найдены несколько статей со словом в листе результатов,
     // затем удаляет результаты поиска и убеждается что лист с результатами пуст
     @Test
     public void testSearchAndCanselSearch() {
@@ -163,7 +160,7 @@ public class FirstTest extends CoreTestCase {
 
     }
 
-    //тест7, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
+    //Ex4. Тест7, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
     @Test
     public void testSearchTextAndCheckTextInTitles() {
         //Смахиваем онбординг
@@ -209,12 +206,13 @@ public class FirstTest extends CoreTestCase {
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
         SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+
         //Работа с заголовком статьи. Инициализация
         ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
         //поиск заголовка нужной статьи
         ArticlePageObject.waitForTitleElement("Java (programming language)");
         //делаем отдельную переменную для названия статьи
-        String article_title = ArticlePageObject.getArticleTitle("Java (programming language)");
+        String article_title = ArticlePageObject.getArticleTitle("Object-oriented programming language");
         //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
         String name_of_folder = "articles";
         // добавляем статью в список статей
@@ -260,7 +258,7 @@ public class FirstTest extends CoreTestCase {
         int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
 
         //убеждаемся, что кол-во полученных элементов больше нуля
-        Assert.assertTrue(
+        assertTrue(
                 "We found too few results",
                 amount_of_search_results > 0
         );
@@ -292,74 +290,50 @@ public class FirstTest extends CoreTestCase {
     @Test
     public void testChangeScreenOrientationOnSearchResults(){
         driver.findElementByXPath("//*[@text='Skip']").click();
-
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
+        SearchPageObject.initSearchInput();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Java");
+        //Поиск элемента и клик по нему
+        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
-        );
-        String search_line = "java";
-
-        //поиск элемента и отправки значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                search_line,
-                "Cannot find search input",
-                5
-        );
-        //находим статью
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
-                "Cannot find 'Object-oriented programming language' topic searching by" +search_line,
-                5
-        );
+        //Работа с заголовком статьи. Инициализация
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
         //получаем название заголовок статьи до ротации, чтобы в дальнейшем ее сравнить после ротации экрана
         //аттрибут (текст), который будем получать, запишем в переменную
-        String title_before_rotation = MainPageObject.waitForElementAndGetAttribute(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "text",
-                "Cannot find title of Article",
-                15
-        );
+        String title_before_rotation = ArticlePageObject.getArticleTitle("Object-oriented programming language");
+
         //повернуть телефон,в скобках указываем в какую сторону хотим повернуть альбомная- горизонт или портретная- вертик
-        driver.rotate(ScreenOrientation.LANDSCAPE);
+        this.rotateScreenLandscape();
 
         //снова получаем значение названия статьи
-        String title_after_rotation = MainPageObject.waitForElementAndGetAttribute(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "text",
-                "Cannot find title of Article",
-                15
-        );
+        String title_after_rotation = ArticlePageObject.getArticleTitle("Object-oriented programming language");
+
         //Сравниваем два значения
-        Assert.assertEquals(
+        assertEquals(
                 "Article title have been changed after rotation",
                 title_before_rotation,
                 title_after_rotation
         );
         //сделаем еще одну ротацию
-        driver.rotate(ScreenOrientation.PORTRAIT);
+        this.rotateScreenPortrait();
 
         //снова получаем значение названия статьи после ротации
-        String title_after_second_rotation = MainPageObject.waitForElementAndGetAttribute(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "text",
-                "Cannot find title of Article",
-                15
-        );
+        String title_after_second_rotation = ArticlePageObject.getArticleTitle("Object-oriented programming language");
+
 
         // сравниваем два значения
-        Assert.assertEquals(
+        assertEquals(
                 "Article title have been changed after rotation",
                 title_before_rotation,
                 title_after_second_rotation
         );
         //еще раз перевернем, чтобы проверить, вернет ли метод экран в портретную ориентацию
-        driver.rotate(ScreenOrientation.LANDSCAPE);
+        this.rotateScreenLandscape();
         //переворот экрана в вертикальную ориентацию, кроме случаев, когда уже в вертикальной ориентации
-        MainPageObject.resetScreenOrientation();
+        this.resetScreenOrientation();
 
     }
 
@@ -370,39 +344,27 @@ public class FirstTest extends CoreTestCase {
     public void testCheckSearchArticleInBackground(){
         driver.findElementByXPath("//*[@text='Skip']").click();
 
-        // поиск элемента, затем кликаем по полю поиска
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInput();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Java");
+        //Поиск элемента в результатах
+        SearchPageObject.waitForSearchResult("Object-oriented programming language");
 
-        );
-        //поиск элемента и отправки значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Java",
-                "Cannot find search input",
-                5
-        );
-        //находим нужную статью
-        MainPageObject.waitForElementPresent(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
-                "Cannot find search input",
-                5
-        );
         //отправляем приложение в бэкграунд
-        driver.runAppInBackground(Duration.ofSeconds(5));
+        this.backgroundApp(5);
+
         //после этого приложение автоматически развернется
 
         //убеждаемся,что та же самая статья действительно присутствует
-        MainPageObject.waitForElementPresent(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
-                "Cannot find article after returned from background",
-                5
-        );
+        SearchPageObject.waitForSearchResult("Object-oriented programming language");
 
     }
-    //Tecт13, сохранить две статьи в список, одну статью удалить, убелиться, что вторая статья осталась,
+
+
+    //Ex5. Tecт13, сохранить две статьи в список, одну статью удалить, убелиться, что вторая статья осталась,
     // зайти в нее и сравнить заголовки
     @Test
     public void testSavedTwoArticleToMyList() {
@@ -603,7 +565,7 @@ public class FirstTest extends CoreTestCase {
         );
         //yбеждаемся, что заголовок в первой статье совпадает
         //Сравниваем два значения
-        Assert.assertEquals(
+        assertEquals(
                 "Article title have been changed after rotation",
                 title_first_article,
                 title_first_article_after_list_change
@@ -611,7 +573,7 @@ public class FirstTest extends CoreTestCase {
 
 
     }
-    //Тест14 тест, который открывает статью и убеждается, что у нее есть элемент title.  тест не должен
+    //Ex6. Тест14, который открывает статью и убеждается, что у нее есть элемент title.  тест не должен
     // дожидаться появления title, проверка должна производиться сразу. Если title не найден - тест падает с ошибкой.
     @Test
     public void testAssertTitle() {
