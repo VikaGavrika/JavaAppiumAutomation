@@ -41,8 +41,29 @@ public class MyListPageObject extends MainPageObject{
                 15
         );
     }
+    public void waitForArticleToAppearByTitleAndClick(String article_title){
+        String article_xpath = getFolderXpathByName(article_title);
+        //поиск списка статей по названию
+        this.waitForElementPresent(
+                By.xpath(article_xpath),
+                "Cannot find saved article by title" +article_title,
+                15
+        );
+        this.waitForElementAndClick(
+                By.xpath(article_xpath),
+                "Cannot find saved article by title" +article_title,
+                15
+
+        );
+    }
 
     public void swipeByArticleToDelete(String article_title){
+        //
+        this.waitForArticleToAppearByTitle(article_title);
+        //удаление статьи свайпом влево
+        this.leftSwipe (200,826,977,92,941);
+    }
+    public void swipeByArticleToDeleteFromList(String article_title){
         //
         this.waitForArticleToAppearByTitle(article_title);
         //удаление статьи свайпом влево

@@ -36,6 +36,8 @@ public class MainPageObject {
         Assert.assertNotNull("Cannot find element", titleElement);
         // Проверка, что элемент отображается
         Assert.assertTrue("Element is not displayed", titleElement.isDisplayed());
+        // вывод в консоль
+        System.out.println("Element is Present");
 
     }
 

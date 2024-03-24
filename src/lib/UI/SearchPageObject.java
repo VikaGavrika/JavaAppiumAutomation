@@ -22,12 +22,22 @@ public class SearchPageObject extends  MainPageObject {
     private static final String
             //локатор кнопки возврата
             SEARCH_CANCEL_BUTTON = "//*[@content-desc='Navigate up']";
+    private static final String
+            //локатор кнопки возврата
+            SEARCH_CLOSE_BUTTON = "org.wikipedia:id/search_close_btn";
 
     private static final String
             SEARCH_RESULT_ELEMENT = "//*[@resource-id=\"org.wikipedia:id/search_results_list\"]/android.view.ViewGroup";
 
     private static final String
             SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text = 'No results']";
+
+    private static final String
+            RESULT_LIST = "org.wikipedia:id/search_results_list";
+    private static final String
+            EMPTY_RESULT_LIST = "org.wikipedia:id/search_empty_container";
+
+
 
 
     /*TEMPLATES METHODS */
@@ -46,15 +56,15 @@ public class SearchPageObject extends  MainPageObject {
         super(driver);
     }
     public WebElement initSearchInput() {
-        this.waitForElementPresent(By.xpath(SEARCH_INPUT), "Cannot find search input after clicking search init element");
+        this.waitForElementPresent(By.xpath(SEARCH_INPUT), "Cannot find search input after clicking search init element",5);
         // Находим элемент
         WebElement element = driver.findElement(By.xpath(SEARCH_INPUT));
         // Возвращаем найденный элемент
-        return element;  // Вернуть найденный элемент
+        return element;
     }
 
     public void initSearchInputAndClick() {
-        this.waitForElementPresent(By.xpath(SEARCH_INPUT), "Cannot find search input after clicking search init element");
+        this.waitForElementPresent(By.xpath(SEARCH_INPUT), "Cannot find search input after clicking search init element",5);
         this.waitForElementAndClick(By.xpath(SEARCH_INPUT), "Cannot find and click search init element", 5);
     }
 
@@ -71,6 +81,12 @@ public class SearchPageObject extends  MainPageObject {
         String search_result_xpath = getResultSearchElement(substring);
         this.waitForElementAndClick(By.xpath(search_result_xpath),"Cannot find and click search result with substring" +substring, 10);
     }
+    //метод, который будет искать пустой список результатов
+    public void waitForEmptyResultsList(){
+        this.waitForElementPresent(By.id(EMPTY_RESULT_LIST), "There are several articles in the results list",5);
+        // вывести в консоль
+        System.out.println("Results list is empty");
+    }
 
     //метод, который будет искать кнопку возврата
     public void waitForCancelButtonToAppear(){
@@ -84,6 +100,12 @@ public class SearchPageObject extends  MainPageObject {
     public void clickCancelSearch(){
         this.waitForElementAndClick(By.xpath(SEARCH_CANCEL_BUTTON), "Cannot find and click search cancel button",5);
     }
+    //клик по кнопку закрыть
+    public void clickCloseSearch(){
+        this.waitForElementAndClick(By.id(SEARCH_CLOSE_BUTTON), "Cannot find and click search close button",5);
+    }
+
+
 
     //метод, который выдает кол-во статей
     public int getAmountOfFoundArticles(){
@@ -97,6 +119,18 @@ public class SearchPageObject extends  MainPageObject {
         return this.getAmountOfElements(By.xpath(SEARCH_RESULT_ELEMENT));
 
     }
+    //находим элемент 'лист результатов' поиска
+    public WebElement resultsList() {
+        this.waitForElementPresent(By.id(RESULT_LIST), "Cannot find search resultList",5);
+        // Находим элемент
+        WebElement element = driver.findElement(By.id(RESULT_LIST));
+        // Возвращаем найденный элемент
+        return element;
+    }
+
+
+
+
     //подтверждаем, что на странице нет результатов
     public void waitForEmptyResultsLabel(){
         //поиск элемента
@@ -111,6 +145,10 @@ public class SearchPageObject extends  MainPageObject {
     public void assertThereIsTextInSearchInput(WebElement element, String expectedText){
         //подтверждаем, что в поле поиска есть текст
         this.assertElementHasText(element, expectedText);
+    }
+    public void assertSearchResultsWithText(WebElement element, String expectedText){
+        //подтверждаем, что в поле поиска есть текст
+        this.assertMultipleSearchResultsWithText(element, expectedText);
     }
 
 

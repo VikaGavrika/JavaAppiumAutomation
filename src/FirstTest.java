@@ -1,7 +1,6 @@
 import lib.CoreTestCase;
 import lib.UI.*;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 
@@ -112,44 +111,21 @@ public class FirstTest extends CoreTestCase {
     // затем удаляет результаты поиска и убеждается что лист с результатами пуст
     @Test
     public void testSearchAndCanselSearch() {
-
-        //дожидаемся элемента строка поиска и кликаем по нему
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find search input",
-                5
-        );
-        //вводим значение в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "planet",
-                "Cannot find search input",
-                5
-        );
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInputAndClick();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("planet");
         //находим элемент 'лист результатов' поиска
-        WebElement resultsList = MainPageObject.waitForElementPresent(
-                By.id("org.wikipedia:id/search_results_list"),
-                "Cannot find search resultList",
-                5
-        );
+        WebElement element = SearchPageObject.resultsList();
         //проверяем, что найдены несколько статей со словом planet в листе результатов
         String expectedText = "planet";
-        MainPageObject.assertMultipleSearchResultsWithText(resultsList, expectedText);
-
-
-        //очищаем поле поиска, путем нажатия кнопки Закрытия
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_close_btn"),
-                "Cannot find close button",
-                5
-        );
-
+        SearchPageObject.assertSearchResultsWithText(element, expectedText);
+        //дожидаемся кнопки закрытия и кликаем по ней
+        SearchPageObject.clickCloseSearch();
         //проверяем, что нет статей в листе результатов, есть пустой лист результатов
-        MainPageObject.waitForElementPresent(
-                By.id("org.wikipedia:id/search_empty_container"),
-                "Cannot find search input",
-                10
-        );
+        SearchPageObject.waitForEmptyResultsList();
 
     }
 
@@ -157,30 +133,20 @@ public class FirstTest extends CoreTestCase {
     @Test
     public void testSearchTextAndCheckTextInTitles() {
 
-        //дожидаемся элемента строка поиска и кликаем по нему
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find search input",
-                5
-        );
-        //вводим значение в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "java",
-                "Cannot find search input",
-                5
-        );
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInputAndClick();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Java");
         //находим элемент 'лист результатов' поиска
-        WebElement resultsList = MainPageObject.waitForElementPresent(
-                By.id("org.wikipedia:id/search_results_list"),
-                "Cannot find search resultList",
-                5
-        );
+        WebElement element = SearchPageObject.resultsList();
         //проверяем, что в каждой статье в листе результатов есть ожидаемое слово
         String expectedText = "java";
-        MainPageObject.assertMultipleSearchResultsWithText(resultsList, expectedText);
+        SearchPageObject.assertSearchResultsWithText( element, expectedText);
 
     }
+
     //Тест8. Поиск определенной статьи, выбрать статью, нажать на кнопку с выпадающем списком, после открытия выбрать
     // и нажать на кнопку из списка, в батоншите создать новый список (нажав на кнопку), ввести название списка в поле,
     // нажать ОК, выйти из статьи, нажать на кнопку списки, перейти на экран со спискими, выбрать один их них, нажать,
@@ -230,6 +196,7 @@ public class FirstTest extends CoreTestCase {
         MyListPageObject.swipeByArticleToDelete(article_title);
         //убеждаемся, что нужной статьи нет в списке
         MyListPageObject.waitForArticleToDisappearByTitle(article_title);
+
 
     }
 
@@ -359,199 +326,73 @@ public class FirstTest extends CoreTestCase {
     @Test
     public void testSavedTwoArticleToMyList() {
 
-        // поиск элемента, затем кликаем по полю поиска
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInputAndClick();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Java");
+        //Клик по статье
+        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
-        );
-        String search_line = "Java";
-        //поиск первой статьи, отправка значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                search_line,
-                "Cannot find search input",
-                5
-        );
-        //поиск нужной статьи и клик
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
-                "Cannot find article in results list",
-                5
-
-        );
-        //получаем значение названия статьи
-        String title_first_article = MainPageObject.waitForElementAndGetAttribute(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "text",
-                "Cannot find title of Article",
-                15
-        );
-
-        //нажать на кнопку с выпадающим списком
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
-                "Cannot find button to open article options",
-                5
-        );
-        //необходимо настроить тулбар, чтобы в меню появилась кнопка Save
-        //нажать на кнопку настроек тулбара
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/customize_toolbar\"]"),
-                "Cannot find button to open customize_toolbar",
-                5
-        );
-
-        //перенос элемента по координатам из категории тулбар в категорию меню
-        MainPageObject.moveButton(200, 1010, 693, 1005, 1748);
-
-        //возврат к статье, нажав Назад
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@content-desc='Navigate up']"),
-                "Cannot find back-button to cancel search",
-                5
-        );
-        //снова нажать на кнопку с выпадающим списком
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
-                "Cannot find button to open article options",
-                5
-        );
-        //нажать на кнопку Save в выпадающем списке
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]"),
-                "Cannot find options to add article to reading list",
-                5
-        );
-        //в появившимся снэк-баре нажать кнопку добавления в список
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text=\"Add to list\"]"),
-                "Cannot find button Add to list",
-                5
-        );
-        //В появившемся мод окне в поле ввода ввести название списка, в этот список будем сохранять статью
+        //Работа с заголовком статьи. Инициализация
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        //поиск заголовка нужной статьи
+        ArticlePageObject.waitForTitleElement("Java (programming language)");
+        //делаем отдельную переменную для названия статьи
+        String title_first_article = ArticlePageObject.getArticleTitle("Java (programming language)");
         //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
         String name_of_folder = "articles";
+        // добавляем статью в список статей
+        ArticlePageObject.addArticleToMyList(name_of_folder);
 
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@resource-id=\"org.wikipedia:id/text_input\"]"),
-                name_of_folder,
-                "Cannot put text into articles folder input",
-                5
-        );
-        //нажать на кнопку ОК
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text=\"OK\"]"),
-                "Cannot press ОК button",
-                5
+        //нажать кнопку назад 3 раза, чтобы вернуться на главную страницу
+        //цикл, повторяем код, пока не будет выполнено определенное условие.
+        int i = 0;
+        while (i < 3) {
+            ArticlePageObject.closeArticle();
+            i++;
+        }
 
-        );
-        //поиск элемента строки поиска и клик по полю
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInputAndClick();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Appium");
+        //Клик по статье
+        SearchPageObject.clickByArticleWithSubstring("Appium");
+        //поиск заголовка нужной статьи
+        ArticlePageObject.waitForTitleElement("Appium");
+        //делаем отдельную переменную для названия статьи
+        String title_second_article = ArticlePageObject.getArticleTitle("Appium");
 
-        );
-        String search_second_line = "Appium";
-        //поиск второй статьи, отправка значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                search_second_line,
-                "Cannot find search input",
-                5
-        );
-        //кликаем на нужную статью
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id=\"org.wikipedia:id/page_list_item_title\" and @text=\"Appium\"]"),
-                "Cannot find search input",
-                5
+        // добавляем статью в список статей
+        ArticlePageObject.addSecondArticleToMyList(name_of_folder);
 
-        );
-        //получаем заголовок второй статьи
-
-        String title_second_article= MainPageObject.waitForElementAndGetAttribute(
-                By.xpath("//*[@text=\"Appium\"]"),
-                "text",
-                "Cannot get title of Article",
-                15
-        );
-        //нажать на кнопку с выпадающим списком
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
-                "Cannot find button to open article options",
-                5
-        );
-        //нажать на кнопку Save в выпадающем списке
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]"),
-                "Cannot find options to add article to reading list",
-                5
-        );
-        //в появившимся снэк-баре нажать кнопку добавления в список
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text=\"Add to list\"]"),
-                "Cannot find button Add to list",
-                5
-        );
-        //в открывшемся батоншите списков найти нужный список и кликнуть
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='"+name_of_folder+"']"),
-                "Cannot find folder articles into My list",
-                5
-        );
-        //нажать на кнопку в снэк баре View list
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text=\"View list\"]"),
-                "Cannot press View list button",
-                5
-        );
+        //инициализация объектов в списке My list
+        MyListPageObject MyListPageObject = new MyListPageObject(driver);
         //убеждаемся, что есть заголовок первой статьи в открывшемся списке
-        MainPageObject.waitForElementPresent(
-                By.xpath("//*[@text='"+ title_first_article +"']"),
-                "Cannot find folder articles into My list",
-                5
-        );
+        MyListPageObject.waitForArticleToAppearByTitle(title_first_article);
         //Выводим в консоль название
         System.out.println("Найден " + title_first_article + " элемент с текстом.");
-
-
         //убеждаемся что есть вторая статья в открывшемся списке
-        MainPageObject.waitForElementPresent(
-                By.xpath("//*[@text='"+ title_second_article +"']"),
-                "Cannot find folder articles into My list",
-                5
-        );
+        MyListPageObject.waitForArticleToAppearByTitle(title_second_article);
         //Выводим в консоль название
         System.out.println("Найден " + title_second_article + " элемент с текстом.");
 
-        //удаление второй статьи свайпом влево
-        MainPageObject.leftSwipe (200,831,1010,216,1023);
+        //удаление статьи свайпом влево
+        MyListPageObject.swipeByArticleToDeleteFromList(title_second_article);
 
+        //убеждаемся, что нет второй статьи в списке
+        MyListPageObject.waitForArticleToDisappearByTitle(title_second_article);
+        //убеждаемся что есть первая статья в списке и кликаем на нее
+        MyListPageObject.waitForArticleToAppearByTitleAndClick(title_first_article);
 
-        //убеждаемся, что нет второй статьи в открывшемся списке
-        MainPageObject.waitForElementNotPresent(
-                By.xpath("//*[@text='"+ title_second_article +"']"),
-                "Cannot find title article into My list",
-                5
-        );
-        //убеждаемся, что есть первая статья в открывшемся списке есть и кликаем на нее
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='"+ title_first_article +"']"),
-                "Cannot find folder articles into My list",
-                5
-        );
         //Выводим в консоль название
         System.out.println("Найден " + title_first_article + " элемент с текстом после изменений в списке.");
 
         //снова получаем значение названия статьи
-        String title_first_article_after_list_change = MainPageObject.waitForElementAndGetAttribute(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "text",
-                "Cannot find title of Article",
-                15
-        );
+        String title_first_article_after_list_change = ArticlePageObject.getArticleTitle("Java (programming language)");
+
         //yбеждаемся, что заголовок в первой статье совпадает
         //Сравниваем два значения
         assertEquals(
@@ -567,31 +408,18 @@ public class FirstTest extends CoreTestCase {
     @Test
     public void testAssertTitle() {
 
-        // поиск элемента, затем кликаем по полю поиска
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                "Cannot find search input",
-                5
-
-        );
-        String search_second_line = "Appium";
-        //поиск второй статьи, отправка значения в поле поиска
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[@text='Search Wikipedia']"),
-                search_second_line,
-                "Cannot find search input",
-                5
-        );
-        //кликаем на нужную статью
-        MainPageObject.waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id=\"org.wikipedia:id/page_list_item_title\" and @text=\"Appium\"]"),
-                "Cannot find search input",
-                5
-        );
-
+        //инициализация
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInputAndClick();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Java");
+        //Поиск элемента в результатах
+        SearchPageObject.waitForSearchResult("Object-oriented programming language");
+        //Работа с заголовком статьи. Инициализация
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
         // Проверяем, что у статьи есть элемент title
-        MainPageObject.assertElementPresent(By.xpath("//*[@text=\"Appium\"]"));
-
+        ArticlePageObject.assertElementPresentWithSearchTitle("Java (programming language)");
 
     }
 

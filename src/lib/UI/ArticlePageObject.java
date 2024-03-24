@@ -34,6 +34,7 @@ public class ArticlePageObject extends MainPageObject{
     public ArticlePageObject(AppiumDriver driver){
         super(driver);
     }
+
     /*TEMPLATES METHODS */
     //метод, который подставляет подстроку по шаблону
     private static String getResultTitleElement(String substring){
@@ -129,6 +130,41 @@ public class ArticlePageObject extends MainPageObject{
 
 
     }
+
+    //метод с шагами, который добавляет еще одну статью в список
+    public void addSecondArticleToMyList(String name_of_folder){
+        //нажать на кнопку с выпадающим списком
+        this.waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
+                "Cannot find button to open article options",
+                5
+        );
+        //нажать на кнопку Save в выпадающем списке
+        this.waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]"),
+                "Cannot find options to add article to reading list",
+                5
+        );
+        //в появившимся снэк-баре нажать кнопку добавления в список
+        this.waitForElementAndClick(
+                By.xpath("//*[@text=\"Add to list\"]"),
+                "Cannot find button Add to list",
+                5
+        );
+        //в открывшемся батоншите списков найти нужный список и кликнуть
+        this.waitForElementAndClick(
+                By.xpath("//*[@text='"+name_of_folder+"']"),
+                "Cannot find folder articles into My list",
+                5
+        );
+        //нажать на кнопку в снэк баре View list
+       this.waitForElementAndClick(
+                By.xpath("//*[@text=\"View list\"]"),
+                "Cannot press View list button",
+                5
+        );
+
+    }
     //метод закрытия
     public void closeArticle(){
         this.waitForElementAndClick(
@@ -136,6 +172,11 @@ public class ArticlePageObject extends MainPageObject{
                 "Cannot find back-button to cancel search",
                 5
         );
+    }
+    // Проверяем, что у статьи есть элемент title
+    public void assertElementPresentWithSearchTitle(String substring){
+        String title_Element_xpath = getResultTitleElement(substring);
+        this.assertElementPresent(By.xpath(title_Element_xpath));
     }
 
 
