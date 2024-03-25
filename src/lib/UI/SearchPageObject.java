@@ -15,9 +15,14 @@ public class SearchPageObject extends  MainPageObject {
             SEARCH_INPUT = "//*[@text='Search Wikipedia']";
 
     private static final String
-            //в константу будет подставляться нужная подстрока  для Java
+            //в константу будет подставляться нужная подстрока для Java
             //TPL метод шаблона. Заменяем какое-то значение по шаблону
             SEARCH_REASULT_BY_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='{SUBSTRING}']";
+    private static final String
+            SEARCH_RESULTS_TITLE_TPL = "//*[@resource-id=\"org.wikipedia:id/page_list_item_title\" and contains(@text, \"{SUBSTRING_TITLE}\")]";
+    private static final String
+            SEARCH_RESULTS_DESCRIPTION_TPL = "//*[@resource-id=\"org.wikipedia:id/page_list_item_description\" and contains(@text, \"{SUBSTRING_DESCRIPTION}\")]";
+
 
     private static final String
             //локатор кнопки возврата
@@ -46,8 +51,21 @@ public class SearchPageObject extends  MainPageObject {
         //меняем значение переменной SUBSTRING на строчку substring
         return SEARCH_REASULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
+    private static String getResultTitleAndDescriptionElements(String title, String description){
+        //меняем значение переменной SUBSTRING на строчку substring
+        String title_Elements_xpath = SEARCH_RESULTS_TITLE_TPL.replace("{SUBSTRING_TITLE}", title);
+        String description_Elements_xpath = SEARCH_RESULTS_DESCRIPTION_TPL.replace("{SUBSTRING_DESCRIPTION}", description);
+        return String.format("(%s)[%s]", title_Elements_xpath, description_Elements_xpath);
+    }
+
+
+
     /*TEMPLATES METHODS */
 
+    public WebElement waitForElementByTitleAndDescription(String title, String description) {
+        String title_description_Elements_xpath = getResultTitleAndDescriptionElements(title,description);
+        return this.waitForElementPresent(By.xpath(title_description_Elements_xpath), "Cannot find article title and description", 5);
+    }
 
 
     //инициализируем драйвер
@@ -126,6 +144,10 @@ public class SearchPageObject extends  MainPageObject {
         WebElement element = driver.findElement(By.id(RESULT_LIST));
         // Возвращаем найденный элемент
         return element;
+    }
+    //счетчик результатов поиска
+    public int getSearchResultsCount() {
+        return driver.findElements(By.xpath(SEARCH_RESULT_ELEMENT)).size();
     }
 
 

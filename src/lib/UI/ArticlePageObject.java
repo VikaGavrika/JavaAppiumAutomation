@@ -8,6 +8,8 @@ public class ArticlePageObject extends MainPageObject{
     //константа
     private static final String
             TITLE_TPL = "//*[@text=\"{SUBSTRING}\"]";
+
+
     private static final String
             FOOTER_ELEMENT = "//*[@text=\"View article in browser\"]";
     private static final String
@@ -36,11 +38,14 @@ public class ArticlePageObject extends MainPageObject{
     }
 
     /*TEMPLATES METHODS */
-    //метод, который подставляет подстроку по шаблону
+    //метод, который подставляет подстроку по шаблону в заголовок статья
     private static String getResultTitleElement(String substring){
         //меняем значение переменной SUBSTRING на строчку substring
         return TITLE_TPL.replace("{SUBSTRING}", substring);
     }
+
+
+
     /*TEMPLATES METHODS */
 
     //метод ожидания статьи
@@ -49,12 +54,16 @@ public class ArticlePageObject extends MainPageObject{
         return this.waitForElementPresent(By.xpath(title_Element_xpath),"Cannot find article title",15);
 
     }
+
+
     //метод в котором будем получать название статьи
     public String getArticleTitle(String substring){
         WebElement title_element = waitForTitleElement(substring);
         //метод будет возвращать название статьи
         return title_element.getAttribute("text");
     }
+
+
     //сделаем метод свайпа до футера
     public void swipeToFooter(){
         this.verticalSwipeToFindElement(

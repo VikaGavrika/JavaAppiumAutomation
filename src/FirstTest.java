@@ -423,8 +423,67 @@ public class FirstTest extends CoreTestCase {
 
     }
 
+    //Ex9. Тест 15. который будет делать поиск по любому запросу на ваш выбор (поиск по этому слову должен возвращать как минимум 3 результата).
+    // Далее тест должен убеждаться, что в результате поиска присутствуют три элемента,
+    // содержащие ожидаемые вами article_title и article_description.
+    @Test
+    public void testSearchArticleAndCheckTitleAndDiscription() {
+
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        //поиска строки элемента и клика
+        SearchPageObject.initSearchInputAndClick();
+        //поиск элемента и отправки значения в поле
+        SearchPageObject.typeSearchLine("Java");
+        //актуальное кол-во результатов поиска
+        int actualResultsCount = SearchPageObject.getSearchResultsCount();
+        // Проверка, что количество найденных элементов не меньше 3,если меньше, то возвращает ошибку, если нет, то рез-ты поиска
+        if (actualResultsCount < 3) {
+            System.out.println("Количество найденных элементов меньше 3");
+            return;
+        }
+        String articleTitleA = "Java";
+        String articleDescriptionA = "Island in Indonesia";
+        SearchPageObject.waitForElementByTitleAndDescription(articleTitleA, articleDescriptionA);
+        // Добавлена проверка текста
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        WebElement elementA = ArticlePageObject.waitForTitleElement("Java");
+        if (articleTitleA.equals(elementA.getText())) {
+            // Выводим в консоль название
+            System.out.println("Найден " + articleTitleA + " и " + articleDescriptionA + " элементы");
+        }
+
+        String articleTitleB = "Java (programming language)";
+        String articleDescriptionB = "Object-oriented programming language";
+        SearchPageObject.waitForElementByTitleAndDescription(articleTitleB, articleDescriptionB);
+        // Добавлена проверка текста
+        WebElement elementB = ArticlePageObject.waitForTitleElement("Java (programming language)");
+        if (articleTitleB.equals(elementB.getText())) {
+            // Выводим в консоль название
+            System.out.println("Найден " + articleTitleB + "и " + articleDescriptionB + " элементы");
+        }
+
+        String articleTitleC = "JavaScript";
+        String articleDescriptionC = "High-level programming language";
+        SearchPageObject.waitForElementByTitleAndDescription(articleTitleC, articleDescriptionC);
+        // Добавлена проверка текста
+        WebElement elementC = ArticlePageObject.waitForTitleElement("JavaScript");
+        if (articleTitleC.equals(elementC.getText())) {
+            //Выводим в консоль название
+            System.out.println("Найден " + articleTitleC + "и " + articleDescriptionC + " элементы");
+        }
+
+
+    }
+
 
 }
+
+
+
+
+
+
+
 
 
 
