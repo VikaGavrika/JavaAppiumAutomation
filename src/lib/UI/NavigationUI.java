@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 
 public class NavigationUI extends MainPageObject{
     private static final String
-            MY_LIST_LINK = "//android.widget.FrameLayout[@content-desc=\"Saved\"]";
+            MY_LIST_LINK = "xpath://android.widget.FrameLayout[@content-desc=\"Saved\"]";
 
     public NavigationUI(AppiumDriver driver){
         super(driver);
@@ -14,7 +14,7 @@ public class NavigationUI extends MainPageObject{
     public void clickMyLists(){
         //кнопка Saved в меню
         this.waitForElementAndClick(
-                By.xpath(MY_LIST_LINK),
+                MY_LIST_LINK,
                 "Cannot find navigation Saved button to My list",
                 5
         );

@@ -16,6 +16,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,10 +27,29 @@ public class MainPageObject {
     public MainPageObject(AppiumDriver driver){
         this.driver = driver;
     }
+    //метод для определения типа локатора
+    private By getLocatorByString(String locator_with_type){
+        //записываем в переменную значение строки "тип локатора", которвй передаем в этот метод, и делит из по симоволу ":"
+        String[] exploded_locator = locator_with_type.split(Pattern.quote(":"),2);
+        String by_type = exploded_locator[0];
+        String locator = exploded_locator[1];
+        //логика для разделения локаторов
+        if(by_type.equals("xpath")){
+            return By.xpath(locator);
+        } else if (by_type.equals("id")){
+            return By.id(locator);
+        } else {
+            throw new IllegalArgumentException("Cannot get type of locator. locator: " +locator_with_type);
+        }
+
+    }
+
+
+
     //переносим все методы, которыми пользуются тесты
 
-
-    public void assertElementPresent(By by){
+    public void assertElementPresent(String locator){
+        By by = this.getLocatorByString(locator);
         WebDriverWait wait = new WebDriverWait(driver, 5);
         WebElement titleElement = wait.until(ExpectedConditions.presenceOfElementLocated(by));
         //проверка, что элемент присутствует, не null
@@ -45,18 +65,16 @@ public class MainPageObject {
 
 
     //метод получения заголовка статьи
-    public String waitForElementAndGetAttribute(By by, String attribute, String error_message, long timeoutInSeconds ){
-        WebElement element = waitForElementPresent(by, error_message,timeoutInSeconds);
+    public String waitForElementAndGetAttribute(String locator, String attribute, String error_message, long timeoutInSeconds ){
+        WebElement element = waitForElementPresent(locator, error_message,timeoutInSeconds);
         return element.getAttribute(attribute);
 
     }
 
-
-
-
     //метод считает количество элементов, которые нашли
-    public int getAmountOfElements(By by)
+    public int getAmountOfElements(String locator)
     {
+        By by = this.getLocatorByString(locator);
         //Функция, которая создает список
         List elements = driver.findElements(by);
         //возвращаем кол-во элементов,которые были найдены
@@ -64,15 +82,16 @@ public class MainPageObject {
     }
 
     //метод, проверяющий, что не нашлось ни одного элемента с текстом из поиска
-    public void assertNoElementsPresentWithText(By by, String search_line, String error_message){
+    public void assertNoElementsPresentWithText(String locator, String search_line, String error_message){
         //получаем кол-во элементов
-        int amount_of_elements = getAmountOfElements(by);
+        int amount_of_elements = getAmountOfElements(locator);
         // Вывод в консоль сколько всего результатов статей
         System.out.println("Найден " + amount_of_elements + " элемент с текстом.");
         //если нашли элемент, то проверяем, какой текст он содержит. Если содержит текст поиска,
         // то выдаем исключение с сообщением
         if (amount_of_elements>0) {
             //получаем список найденных элементов
+            By by = this.getLocatorByString(locator);
             List <WebElement> elements = driver.findElements(by);
             // Проверить каждый элемент
             for (WebElement element : elements) {
@@ -81,7 +100,7 @@ public class MainPageObject {
                 if (elementText.contains(search_line)) {
                     //передаем элемент by в строковое значение, предполагается, что этот элемент отсутствует
                     //формируем строку с этим элементом
-                    String default_message = "An element '" + by.toString() + "'supposed to be not present";
+                    String default_message = "An element '" + locator + "'supposed to be not present";
                     //обозначает проблему, что этого элемента не должно быть, а он есть, и кидаем сообщение об этом
                     throw new AssertionError(default_message + " " + error_message);
                 }
@@ -142,7 +161,8 @@ public class MainPageObject {
 
 
     //метод, котрый будет искать элемент по любому атрибуту
-    public WebElement waitForElementPresent(By by, String error_message, long timeoutInSecond) {
+    public WebElement waitForElementPresent(String locator, String error_message, long timeoutInSecond) {
+        By by = this.getLocatorByString(locator);
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
         wait.withMessage(error_message + "\n");
         return wait.until(
@@ -152,26 +172,27 @@ public class MainPageObject {
     }
 
     //метод адаптированный, который ищет элемент с дефолтной задержкой в 3 сек
-    public WebElement waitForElementPresent(By by, String error_message) {
-        return waitForElementPresent(by, error_message, 3);
+    public WebElement waitForElementPresent(String locator, String error_message) {
+        return waitForElementPresent(locator, error_message, 3);
     }
 
     //метод, испол-я который тесты сначала будут дожидаться элемента, а после этого происзойдет клик
-    public WebElement waitForElementAndClick(By by, String error_message, long timeoutInSecond) {
-        WebElement element = waitForElementPresent(by, error_message, timeoutInSecond);
+    public WebElement waitForElementAndClick(String locator, String error_message, long timeoutInSecond) {
+        WebElement element = waitForElementPresent(locator, error_message, timeoutInSecond);
         element.click();
         return element;
     }
 
     //метод, испол-я который тесты сначала будут дожидаться элемента, а после этого происзойдет отправка текста
-    public WebElement waitForElementAndSendKeys(By by, String value, String error_message, long timeoutInSecond) {
-        WebElement element = waitForElementPresent(by, error_message, timeoutInSecond);
+    public WebElement waitForElementAndSendKeys(String locator, String value, String error_message, long timeoutInSecond) {
+        WebElement element = waitForElementPresent(locator, error_message, timeoutInSecond);
         element.sendKeys(value);
         return element;
     }
 
     //Метод отсутствия элемента на странице
-    public boolean waitForElementNotPresent(By by, String error_message, long timeoutInSecond) {
+    public boolean waitForElementNotPresent(String locator, String error_message, long timeoutInSecond) {
+        By by = this.getLocatorByString(locator);
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
         wait.withMessage(error_message + "\n");
         return wait.until(
@@ -182,8 +203,8 @@ public class MainPageObject {
     }
 
     //метод очистки поля ввода
-    public WebElement waitForElementAndClear(By by, String error_message, long timeoutInSecond) {
-        WebElement element = waitForElementPresent(by, error_message, timeoutInSecond);
+    public WebElement waitForElementAndClear(String locator, String error_message, long timeoutInSecond) {
+        WebElement element = waitForElementPresent(locator, error_message, timeoutInSecond);
         element.clear();
         return element;
 
@@ -246,8 +267,9 @@ public class MainPageObject {
     }
 
     //метод, в котором будем свайпить до определенного элемента
-    public void verticalSwipeToFindElement(By by, String error_message, int max_swipes)
+    public void verticalSwipeToFindElement(String locator, String error_message, int max_swipes)
     {
+        By by = this.getLocatorByString(locator);
         //поиск всех элементов и считаем кол-во найденных элементов
         //цикл будет работать (свайпить) пока функция не находит ни одного элемента, как только элемент найдется, цикл завершится
         //если превысим кол-во свайпов, то цикл остановится
@@ -257,7 +279,7 @@ public class MainPageObject {
             //остановка цикла, если свайпы превысили макс значение
             if (already_swiped > max_swipes){
                 //проверяем, что этого элемента все еще нет
-                waitForElementPresent(by, "Cannot find element by swiping up. \n" +error_message,0);
+                waitForElementPresent(locator, "Cannot find element by swiping up. \n" +error_message,0);
                 //если элемент нашелся, выходим с метода и идем дальше по коду
                 return;
             }

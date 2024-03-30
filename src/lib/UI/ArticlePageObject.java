@@ -7,28 +7,27 @@ import org.openqa.selenium.WebElement;
 public class ArticlePageObject extends MainPageObject{
     //константа
     private static final String
-            TITLE_TPL = "//*[@text=\"{SUBSTRING}\"]";
+            TITLE_TPL = "xpath://*[@text=\"{SUBSTRING}\"]";
 
 
     private static final String
-            FOOTER_ELEMENT = "//*[@text=\"View article in browser\"]";
+            FOOTER_ELEMENT = "xpath://*[@text=\"View article in browser\"]";
     private static final String
-            OPTIONS_BUTTON = "//android.widget.ImageView[@content-desc=\"More options\"]";
+            OPTIONS_BUTTON = "xpath://android.widget.ImageView[@content-desc=\"More options\"]";
     private static final String
-            TOOLBAR_BUTTON = "//android.widget.TextView[@resource-id=\"org.wikipedia:id/customize_toolbar\"]";
+            TOOLBAR_BUTTON = "xpath://android.widget.TextView[@resource-id=\"org.wikipedia:id/customize_toolbar\"]";
     private static final String
-            NAVIGATE_BUTTON = "//*[@content-desc='Navigate up']";
+            NAVIGATE_BUTTON = "xpath://*[@content-desc='Navigate up']";
     private static final String
-            SAVE_BUTTON = "//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]";
+            SAVE_BUTTON = "xpath://android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]";
     private static final String
-            OPTIONS_ADD_TO_MY_LIST_BUTTON = "//*[@text=\"Add to list\"]";
+            OPTIONS_ADD_TO_MY_LIST_BUTTON = "xpath://*[@text=\"Add to list\"]";
     private static final String
-            MY_LIST_NAME_INPUT = "//*[@resource-id=\"org.wikipedia:id/text_input\"]";
+            MY_LIST_NAME_INPUT = "xpath://*[@resource-id=\"org.wikipedia:id/text_input\"]";
     private static final String
-            MY_LIST_OK_BUTTON = "//*[@text=\"OK\"]";
+            MY_LIST_OK_BUTTON = "xpath://*[@text=\"OK\"]";
     private static final String
-            OPTIONS_VIEW_LIST_BUTTON = "//*[@text=\"View list\"]";
-
+            OPTIONS_VIEW_LIST_BUTTON = "xpath://*[@text=\"View list\"]";
 
 
 
@@ -45,16 +44,14 @@ public class ArticlePageObject extends MainPageObject{
     }
 
 
-
     /*TEMPLATES METHODS */
 
     //метод ожидания статьи
     public WebElement waitForTitleElement(String substring){
         String title_Element_xpath = getResultTitleElement(substring);
-        return this.waitForElementPresent(By.xpath(title_Element_xpath),"Cannot find article title",15);
+        return this.waitForElementPresent(title_Element_xpath,"Cannot find article title",15);
 
     }
-
 
     //метод в котором будем получать название статьи
     public String getArticleTitle(String substring){
@@ -67,7 +64,7 @@ public class ArticlePageObject extends MainPageObject{
     //сделаем метод свайпа до футера
     public void swipeToFooter(){
         this.verticalSwipeToFindElement(
-                By.xpath(FOOTER_ELEMENT),
+                FOOTER_ELEMENT,
                 "Cannot find the end or Article",
                 20
         );
@@ -79,13 +76,13 @@ public class ArticlePageObject extends MainPageObject{
 
         //нажать на кнопку с выпадающим списком
         this.waitForElementAndClick(
-                By.xpath(OPTIONS_BUTTON),
+                OPTIONS_BUTTON,
                 "Cannot find button to open article options",
                 5
         );
         //нажать на кнопку настроек тулбара
         this.waitForElementAndClick(
-                By.xpath(TOOLBAR_BUTTON),
+                TOOLBAR_BUTTON,
                 "Cannot find button to open customize_toolbar",
                 5
         );
@@ -95,44 +92,44 @@ public class ArticlePageObject extends MainPageObject{
 
         //возврат к статье, нажав Назад
         this.waitForElementAndClick(
-                By.xpath(NAVIGATE_BUTTON),
+                NAVIGATE_BUTTON,
                 "Cannot find back-button to cancel search",
                 5
         );
         //снова нажать на кнопку с выпадающим списком
         this.waitForElementAndClick(
-                By.xpath(OPTIONS_BUTTON),
+                OPTIONS_BUTTON,
                 "Cannot find button to open article options",
                 5
         );
         //нажать на кнопку Save в выпадающем списке
         this.waitForElementAndClick(
-                By.xpath(SAVE_BUTTON),
+                SAVE_BUTTON,
                 "Cannot find options to add article to reading list",
                 5
         );
         //в появившимся снэк-баре нажать кнопку добавления в список
         this.waitForElementAndClick(
-                By.xpath(OPTIONS_ADD_TO_MY_LIST_BUTTON),
+                OPTIONS_ADD_TO_MY_LIST_BUTTON,
                 "Cannot find button Add to list",
                 5
         );
 
         this.waitForElementAndSendKeys(
-                By.xpath(MY_LIST_NAME_INPUT),
+                MY_LIST_NAME_INPUT,
                 name_of_folder,
                 "Cannot put text into articles folder input",
                 5
         );
         //нажать на кнопку ОК
         this.waitForElementAndClick(
-                By.xpath(MY_LIST_OK_BUTTON),
+                MY_LIST_OK_BUTTON,
                 "Cannot press ОК button",
                 5
         );
         //нажать на кнопку в снэк баре View list
         this.waitForElementAndClick(
-                By.xpath(OPTIONS_VIEW_LIST_BUTTON),
+                OPTIONS_VIEW_LIST_BUTTON,
                 "Cannot press View list button",
                 5
         );
@@ -144,31 +141,31 @@ public class ArticlePageObject extends MainPageObject{
     public void addSecondArticleToMyList(String name_of_folder){
         //нажать на кнопку с выпадающим списком
         this.waitForElementAndClick(
-                By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"),
+                OPTIONS_BUTTON,
                 "Cannot find button to open article options",
                 5
         );
         //нажать на кнопку Save в выпадающем списке
         this.waitForElementAndClick(
-                By.xpath("//android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]"),
+                SAVE_BUTTON,
                 "Cannot find options to add article to reading list",
                 5
         );
         //в появившимся снэк-баре нажать кнопку добавления в список
         this.waitForElementAndClick(
-                By.xpath("//*[@text=\"Add to list\"]"),
+                OPTIONS_ADD_TO_MY_LIST_BUTTON,
                 "Cannot find button Add to list",
                 5
         );
         //в открывшемся батоншите списков найти нужный список и кликнуть
         this.waitForElementAndClick(
-                By.xpath("//*[@text='"+name_of_folder+"']"),
+                "xpath://*[@text='"+name_of_folder+"']",
                 "Cannot find folder articles into My list",
                 5
         );
         //нажать на кнопку в снэк баре View list
-       this.waitForElementAndClick(
-                By.xpath("//*[@text=\"View list\"]"),
+        this.waitForElementAndClick(
+                OPTIONS_VIEW_LIST_BUTTON,
                 "Cannot press View list button",
                 5
         );
@@ -177,7 +174,7 @@ public class ArticlePageObject extends MainPageObject{
     //метод закрытия
     public void closeArticle(){
         this.waitForElementAndClick(
-                By.xpath(NAVIGATE_BUTTON),
+                NAVIGATE_BUTTON,
                 "Cannot find back-button to cancel search",
                 5
         );
@@ -185,7 +182,7 @@ public class ArticlePageObject extends MainPageObject{
     // Проверяем, что у статьи есть элемент title
     public void assertElementPresentWithSearchTitle(String substring){
         String title_Element_xpath = getResultTitleElement(substring);
-        this.assertElementPresent(By.xpath(title_Element_xpath));
+        this.assertElementPresent(title_Element_xpath);
     }
 
 

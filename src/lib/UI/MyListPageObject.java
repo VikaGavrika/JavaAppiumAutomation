@@ -5,9 +5,9 @@ import org.openqa.selenium.By;
 
 public class MyListPageObject extends MainPageObject{
     public static final String
-            FOLDER_BY_NAME_TPL = "//*[@text='{FOLDER_NAME}']";
+            FOLDER_BY_NAME_TPL = "xpath://*[@text='{FOLDER_NAME}']";
     public static final String
-            ARTICLE_BY_TITLE_TPL = "//*[@text='{TITLE}']";
+            ARTICLE_BY_TITLE_TPL = "xpath://*[@text='{TITLE}']";
 
     private static String getFolderXpathByName(String name_of_folder){
         return FOLDER_BY_NAME_TPL.replace("{FOLDER_NAME}", name_of_folder);
@@ -26,7 +26,7 @@ public class MyListPageObject extends MainPageObject{
         String folder_name_xpath = getFolderXpathByName(name_of_folder);
         //поиск списка статей по названию, название задано в переменную выше. клик на список статей
         this.waitForElementAndClick(
-                By.xpath(folder_name_xpath),
+                folder_name_xpath,
                 "Cannot find folder by name" +name_of_folder,
                 5
         );
@@ -36,7 +36,7 @@ public class MyListPageObject extends MainPageObject{
         String article_xpath = getFolderXpathByName(article_title);
         //поиск списка статей по названию
         this.waitForElementPresent(
-                By.xpath(article_xpath),
+                article_xpath,
                 "Cannot find saved article by title" +article_title,
                 15
         );
@@ -45,12 +45,12 @@ public class MyListPageObject extends MainPageObject{
         String article_xpath = getFolderXpathByName(article_title);
         //поиск списка статей по названию
         this.waitForElementPresent(
-                By.xpath(article_xpath),
+                article_xpath,
                 "Cannot find saved article by title" +article_title,
                 15
         );
         this.waitForElementAndClick(
-                By.xpath(article_xpath),
+                article_xpath,
                 "Cannot find saved article by title" +article_title,
                 15
 
@@ -73,7 +73,7 @@ public class MyListPageObject extends MainPageObject{
         String article_xpath = getFolderXpathByName(article_title);
         //поиск списка статей по названию
         this.waitForElementNotPresent(
-                By.xpath(article_xpath),
+                article_xpath,
                 "Cannot find saved article" +article_title,
                 15
         );
