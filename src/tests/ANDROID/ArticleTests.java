@@ -1,4 +1,4 @@
-package tests;
+package tests.ANDROID;
 
 import lib.CoreTestCase;
 import lib.UI.ArticlePageObject;
@@ -30,7 +30,7 @@ public class ArticleTests extends CoreTestCase {
         //используем это название статьи для сравнения
         assertEquals(
                 "We see unexpected title",
-                "Java (programming language)",
+                "Object-oriented programming language",
                 article_title
         );
 

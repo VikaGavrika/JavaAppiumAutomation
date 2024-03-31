@@ -1,4 +1,4 @@
-package tests;
+package tests.ANDROID;
 
 import lib.CoreTestCase;
 import lib.UI.ArticlePageObject;

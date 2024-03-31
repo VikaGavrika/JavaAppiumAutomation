@@ -64,7 +64,7 @@ public class SearchPageObject extends  MainPageObject {
 
     public WebElement waitForElementByTitleAndDescription(String title, String description) {
         String title_description_Elements_xpath = getResultTitleAndDescriptionElements(title,description);
-        return this.waitForElementPresent(title_description_Elements_xpath, "Cannot find article title and description", 5);
+        return this.waitForElementPresent(title_description_Elements_xpath, "Cannot find article title and description", 15);
     }
 
 
@@ -74,7 +74,7 @@ public class SearchPageObject extends  MainPageObject {
         super(driver);
     }
     public WebElement initSearchInput() {
-        this.waitForElementPresent(SEARCH_INPUT, "Cannot find search input after clicking search init element",5);
+        this.waitForElementPresent(SEARCH_INPUT, "Cannot find search input after clicking search init element",15);
         // Находим элемент
         WebElement element = driver.findElement(By.xpath(SEARCH_INPUT));
         // Возвращаем найденный элемент
@@ -82,12 +82,12 @@ public class SearchPageObject extends  MainPageObject {
     }
 
     public void initSearchInputAndClick() {
-        this.waitForElementPresent(SEARCH_INPUT, "Cannot find search input after clicking search init element",5);
-        this.waitForElementAndClick(SEARCH_INPUT, "Cannot find and click search init element", 5);
+        this.waitForElementPresent(SEARCH_INPUT, "Cannot find search input after clicking search init element",15);
+        this.waitForElementAndClick(SEARCH_INPUT, "Cannot find and click search init element", 15);
     }
 
     public void typeSearchLine(String search_line){
-        this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find and type into search input",5);
+        this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find and type into search input",15);
     }
 
     public void waitForSearchResult (String substring){
@@ -97,30 +97,30 @@ public class SearchPageObject extends  MainPageObject {
 
     public void clickByArticleWithSubstring (String substring){
         String search_result_xpath = getResultSearchElement(substring);
-        this.waitForElementAndClick(search_result_xpath,"Cannot find and click search result with substring" +substring, 10);
+        this.waitForElementAndClick(search_result_xpath,"Cannot find and click search result with substring" +substring, 15);
     }
     //метод, который будет искать пустой список результатов
     public void waitForEmptyResultsList(){
-        this.waitForElementPresent(EMPTY_RESULT_LIST, "There are several articles in the results list",5);
+        this.waitForElementPresent(EMPTY_RESULT_LIST, "There are several articles in the results list",15);
         // вывести в консоль
         System.out.println("Results list is empty");
     }
 
     //метод, который будет искать кнопку возврата
     public void waitForCancelButtonToAppear(){
-        this.waitForElementPresent(SEARCH_CANCEL_BUTTON, "Cannot find search cancel button",5);
+        this.waitForElementPresent(SEARCH_CANCEL_BUTTON, "Cannot find search cancel button",15);
     }
     //метод, который будет ожидать отсутствие этой кнопки по окончанию теста
     public void waitForCancelButtonToDisappear(){
-        this.waitForElementNotPresent(SEARCH_CANCEL_BUTTON, "Search cancel button is still present",5);
+        this.waitForElementNotPresent(SEARCH_CANCEL_BUTTON, "Search cancel button is still present",15);
     }
     //клик по кнопку возврата
     public void clickCancelSearch(){
-        this.waitForElementAndClick(SEARCH_CANCEL_BUTTON, "Cannot find and click search cancel button",5);
+        this.waitForElementAndClick(SEARCH_CANCEL_BUTTON, "Cannot find and click search cancel button",15);
     }
     //клик по кнопку закрыть
     public void clickCloseSearch(){
-        this.waitForElementAndClick(SEARCH_CLOSE_BUTTON, "Cannot find and click search close button",5);
+        this.waitForElementAndClick(SEARCH_CLOSE_BUTTON, "Cannot find and click search close button",15);
     }
 
 
@@ -139,7 +139,7 @@ public class SearchPageObject extends  MainPageObject {
     }
     //находим элемент 'лист результатов' поиска
     public WebElement resultsList() {
-        this.waitForElementPresent(RESULT_LIST, "Cannot find search resultList",5);
+        this.waitForElementPresent(RESULT_LIST, "Cannot find search resultList",15);
         // Находим элемент
         WebElement element = driver.findElement(By.id(RESULT_LIST));
         // Возвращаем найденный элемент

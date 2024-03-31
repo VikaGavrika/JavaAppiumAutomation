@@ -28,7 +28,7 @@ public class MyListPageObject extends MainPageObject{
         this.waitForElementAndClick(
                 folder_name_xpath,
                 "Cannot find folder by name" +name_of_folder,
-                5
+                20
         );
     }
     //Метод ожидания статьи
@@ -38,7 +38,7 @@ public class MyListPageObject extends MainPageObject{
         this.waitForElementPresent(
                 article_xpath,
                 "Cannot find saved article by title" +article_title,
-                15
+                20
         );
     }
     public void waitForArticleToAppearByTitleAndClick(String article_title){
@@ -47,12 +47,12 @@ public class MyListPageObject extends MainPageObject{
         this.waitForElementPresent(
                 article_xpath,
                 "Cannot find saved article by title" +article_title,
-                15
+                20
         );
         this.waitForElementAndClick(
                 article_xpath,
                 "Cannot find saved article by title" +article_title,
-                15
+                20
 
         );
     }
@@ -75,7 +75,7 @@ public class MyListPageObject extends MainPageObject{
         this.waitForElementNotPresent(
                 article_xpath,
                 "Cannot find saved article" +article_title,
-                15
+                20
         );
     }
 

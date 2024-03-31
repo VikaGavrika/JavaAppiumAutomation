@@ -24,17 +24,26 @@ public class CoreTestCase extends TestCase {
     protected void setUp () throws Exception
     {
         super.setUp();
-
+        String platform = System.getenv("PLATFORM");
         DesiredCapabilities capabilities = this.getCapabilitiesByPlatformEny();
 
-        driver = new AndroidDriver(new URL(AppiumUrl), capabilities);
-        driver = new IOSDriver(new URL(AppiumUrl), capabilities);
+        if (platform.equals(PLATFORM_ANDROID)) {
+            driver = new AndroidDriver(new URL(AppiumUrl), capabilities);
+            //переворачиваем телефон в вертик ориентацию в начале каждого теста
+            this.resetScreenOrientation();
+            //Смахиваем онбординг в начале каждого теста
+            this.skipOnboarding();
+        } else if (platform.equals(PLATFORM_IOS)) {
+            driver = new IOSDriver(new URL(AppiumUrl), capabilities);
+
+        } else {
+            throw new Exception("Unknown platform: " + platform);
+        }
 
         //переворачиваем телефон в вертик ориентацию в начале каждого теста
         this.resetScreenOrientation();
         //Смахиваем онбординг в начале каждого теста
-        this.skipOnboarding();
-
+        //this.skipOnboarding();
 
     }
     @Override

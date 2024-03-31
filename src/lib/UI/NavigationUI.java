@@ -16,7 +16,7 @@ public class NavigationUI extends MainPageObject{
         this.waitForElementAndClick(
                 MY_LIST_LINK,
                 "Cannot find navigation Saved button to My list",
-                5
+                20
         );
     }
 

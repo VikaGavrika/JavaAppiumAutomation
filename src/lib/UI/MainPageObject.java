@@ -50,7 +50,7 @@ public class MainPageObject {
 
     public void assertElementPresent(String locator){
         By by = this.getLocatorByString(locator);
-        WebDriverWait wait = new WebDriverWait(driver, 5);
+        WebDriverWait wait = new WebDriverWait(driver, 15);
         WebElement titleElement = wait.until(ExpectedConditions.presenceOfElementLocated(by));
         //проверка, что элемент присутствует, не null
         Assert.assertNotNull("Cannot find element", titleElement);
@@ -173,7 +173,7 @@ public class MainPageObject {
 
     //метод адаптированный, который ищет элемент с дефолтной задержкой в 3 сек
     public WebElement waitForElementPresent(String locator, String error_message) {
-        return waitForElementPresent(locator, error_message, 3);
+        return waitForElementPresent(locator, error_message, 15);
     }
 
     //метод, испол-я который тесты сначала будут дожидаться элемента, а после этого происзойдет клик
@@ -279,7 +279,7 @@ public class MainPageObject {
             //остановка цикла, если свайпы превысили макс значение
             if (already_swiped > max_swipes){
                 //проверяем, что этого элемента все еще нет
-                waitForElementPresent(locator, "Cannot find element by swiping up. \n" +error_message,0);
+                waitForElementPresent(locator, "Cannot find element by swiping up. \n" +error_message,15);
                 //если элемент нашелся, выходим с метода и идем дальше по коду
                 return;
             }

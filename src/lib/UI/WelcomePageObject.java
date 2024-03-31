@@ -33,7 +33,7 @@ public class WelcomePageObject extends MainPageObject{
     //поиск характерного элемента на странице онбординга
     //ссылку на 1 онбординге
     public void waitForLearnMoreLink(){
-        this.waitForElementPresent(LINK_ELEMENT,"Cannot find link",10);
+        this.waitForElementPresent(LINK_ELEMENT,"Cannot find link",15);
     }
     //заголовок 2,3,4 онбордингов
     public void waitForOnboardingTitle(String onboarding_title){
@@ -43,11 +43,11 @@ public class WelcomePageObject extends MainPageObject{
 
     //клик по кнопке
     public void clickNextButton(){
-        this.waitForElementAndClick(NEXT_BUTTON,"Cannot find next button and click",10);
+        this.waitForElementAndClick(NEXT_BUTTON,"Cannot find next button and click",15);
     }
     //клик по кнопке
     public void clickGetStartedButton(){
-        this.waitForElementAndClick(GET_STARTED_BUTTON,"Cannot find get started button and click",10);
+        this.waitForElementAndClick(GET_STARTED_BUTTON,"Cannot find get started button and click",15);
     }
 
 

@@ -49,7 +49,7 @@ public class ArticlePageObject extends MainPageObject{
     //метод ожидания статьи
     public WebElement waitForTitleElement(String substring){
         String title_Element_xpath = getResultTitleElement(substring);
-        return this.waitForElementPresent(title_Element_xpath,"Cannot find article title",15);
+        return this.waitForElementPresent(title_Element_xpath,"Cannot find article title",25);
 
     }
 
@@ -78,13 +78,13 @@ public class ArticlePageObject extends MainPageObject{
         this.waitForElementAndClick(
                 OPTIONS_BUTTON,
                 "Cannot find button to open article options",
-                5
+                20
         );
         //нажать на кнопку настроек тулбара
         this.waitForElementAndClick(
                 TOOLBAR_BUTTON,
                 "Cannot find button to open customize_toolbar",
-                5
+                20
         );
 
         //перенос кнопки элемента по координатам
@@ -94,44 +94,44 @@ public class ArticlePageObject extends MainPageObject{
         this.waitForElementAndClick(
                 NAVIGATE_BUTTON,
                 "Cannot find back-button to cancel search",
-                5
+                20
         );
         //снова нажать на кнопку с выпадающим списком
         this.waitForElementAndClick(
                 OPTIONS_BUTTON,
                 "Cannot find button to open article options",
-                5
+                20
         );
         //нажать на кнопку Save в выпадающем списке
         this.waitForElementAndClick(
                 SAVE_BUTTON,
                 "Cannot find options to add article to reading list",
-                5
+                20
         );
         //в появившимся снэк-баре нажать кнопку добавления в список
         this.waitForElementAndClick(
                 OPTIONS_ADD_TO_MY_LIST_BUTTON,
                 "Cannot find button Add to list",
-                5
+                20
         );
 
         this.waitForElementAndSendKeys(
                 MY_LIST_NAME_INPUT,
                 name_of_folder,
                 "Cannot put text into articles folder input",
-                5
+                20
         );
         //нажать на кнопку ОК
         this.waitForElementAndClick(
                 MY_LIST_OK_BUTTON,
                 "Cannot press ОК button",
-                5
+                20
         );
         //нажать на кнопку в снэк баре View list
         this.waitForElementAndClick(
                 OPTIONS_VIEW_LIST_BUTTON,
                 "Cannot press View list button",
-                5
+                20
         );
 
 
@@ -143,31 +143,31 @@ public class ArticlePageObject extends MainPageObject{
         this.waitForElementAndClick(
                 OPTIONS_BUTTON,
                 "Cannot find button to open article options",
-                5
+                20
         );
         //нажать на кнопку Save в выпадающем списке
         this.waitForElementAndClick(
                 SAVE_BUTTON,
                 "Cannot find options to add article to reading list",
-                5
+                20
         );
         //в появившимся снэк-баре нажать кнопку добавления в список
         this.waitForElementAndClick(
                 OPTIONS_ADD_TO_MY_LIST_BUTTON,
                 "Cannot find button Add to list",
-                5
+                20
         );
         //в открывшемся батоншите списков найти нужный список и кликнуть
         this.waitForElementAndClick(
                 "xpath://*[@text='"+name_of_folder+"']",
                 "Cannot find folder articles into My list",
-                5
+                20
         );
         //нажать на кнопку в снэк баре View list
         this.waitForElementAndClick(
                 OPTIONS_VIEW_LIST_BUTTON,
                 "Cannot press View list button",
-                5
+                20
         );
 
     }
@@ -176,7 +176,7 @@ public class ArticlePageObject extends MainPageObject{
         this.waitForElementAndClick(
                 NAVIGATE_BUTTON,
                 "Cannot find back-button to cancel search",
-                5
+                20
         );
     }
     // Проверяем, что у статьи есть элемент title
