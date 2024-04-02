@@ -16,7 +16,8 @@ public class MyListTests extends CoreTestCase {
     // убедиться, что она удалена, тест будет считаться законченным
     @Test
     public void testSavedFirstArticleToMyList(){
-
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
@@ -66,6 +67,8 @@ public class MyListTests extends CoreTestCase {
     // зайти в нее и сравнить заголовки
     @Test
     public void testSavedTwoArticleToMyList() {
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
@@ -142,9 +145,6 @@ public class MyListTests extends CoreTestCase {
                 title_first_article_after_list_change
         );
 
-
     }
-
-
 
 }

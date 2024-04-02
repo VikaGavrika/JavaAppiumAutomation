@@ -10,6 +10,8 @@ public class ArticleTests extends CoreTestCase {
     //Тест3 Сравнить название статьи
     @Test
     public void testCompareArticleTitle() {
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
@@ -39,6 +41,8 @@ public class ArticleTests extends CoreTestCase {
     //Тест4, свайп до конца страницы до текста в футере
     @Test
     public void testSwipeArticle() {
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
@@ -60,6 +64,8 @@ public class ArticleTests extends CoreTestCase {
     // дожидаться появления title, проверка должна производиться сразу. Если title не найден - тест падает с ошибкой.
     @Test
     public void testAssertTitle() {
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);

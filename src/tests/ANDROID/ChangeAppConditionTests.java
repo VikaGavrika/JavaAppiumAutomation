@@ -12,6 +12,8 @@ public class ChangeAppConditionTests extends CoreTestCase {
     // проверять, что название статьи не изменилось
     @Test
     public void testChangeScreenOrientationOnSearchResults(){
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
@@ -65,6 +67,8 @@ public class ChangeAppConditionTests extends CoreTestCase {
     // что элемент, остался на месте.
     @Test
     public void testCheckSearchArticleInBackground(){
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);

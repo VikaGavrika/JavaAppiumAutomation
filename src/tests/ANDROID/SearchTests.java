@@ -11,6 +11,8 @@ public class SearchTests extends CoreTestCase {
     //Тест1. Поиск
     @Test
     public void testSearch() {
+        //пропустить онбординг
+        this.skipOnboarding();
 
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
@@ -24,6 +26,8 @@ public class SearchTests extends CoreTestCase {
     //Тест2. Отменяет поиск
     @Test
     public void testCanselSearch() {
+        //пропустить онбординг
+        this.skipOnboarding();
 
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
@@ -43,6 +47,9 @@ public class SearchTests extends CoreTestCase {
     //тест5, который проверяет, что поле ввода для поиска статьи содержит текст Search Wikipedia
     @Test
     public void testSearchInputHasText() {
+        //пропустить онбординг
+        this.skipOnboarding();
+
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиск поля поиска
@@ -58,6 +65,9 @@ public class SearchTests extends CoreTestCase {
     // затем удаляет результаты поиска и убеждается что лист с результатами пуст
     @Test
     public void testSearchAndCanselSearch() {
+        //пропустить онбординг
+        this.skipOnboarding();
+
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
@@ -79,6 +89,8 @@ public class SearchTests extends CoreTestCase {
     //Ex4. Тест7, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
     @Test
     public void testSearchTextAndCheckTextInTitles() {
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
@@ -99,6 +111,8 @@ public class SearchTests extends CoreTestCase {
     //Тест9, которой ищет какую-то конкретную статью, а затем проверяет, что вышел 1 результат с этой статьей
     @Test
     public void testAmountOfNotEmptySearch(){
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
@@ -123,6 +137,8 @@ public class SearchTests extends CoreTestCase {
     // И есть элемент "нет результатов"
     @Test
     public void testAmountOfEmptySearch(){
+        //пропустить онбординг
+        this.skipOnboarding();
 
         //инициализация
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
@@ -142,6 +158,8 @@ public class SearchTests extends CoreTestCase {
     // содержащие ожидаемые вами article_title и article_description.
     @Test
     public void testSearchArticleAndCheckTitleAndDiscription() {
+        //пропустить онбординг
+        this.skipOnboarding();
 
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
         //поиска строки элемента и клика
@@ -185,7 +203,6 @@ public class SearchTests extends CoreTestCase {
             //Выводим в консоль название
             System.out.println("Найден " + articleTitleC + "и " + articleDescriptionC + " элементы");
         }
-
 
     }
 

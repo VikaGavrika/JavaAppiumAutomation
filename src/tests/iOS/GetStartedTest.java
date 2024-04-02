@@ -1,12 +1,18 @@
 package tests.iOS;
 
+import lib.CoreTestCase;
 import lib.UI.WelcomePageObject;
-import lib.iOSTestCase;
 import org.junit.Test;
 
-public class GetStartedTest extends iOSTestCase {
+public class GetStartedTest extends CoreTestCase {
     @Test
     public void testPassThroughWelcome(){
+        if (this.Platform.isAndroid()){
+            //сброс онбординга
+            this.skipOnboarding();
+            return;
+        }
+
         //инициализация
         WelcomePageObject WelcomePageObject = new WelcomePageObject(driver);
         //находим ссылку на 1 онбор
@@ -26,9 +32,6 @@ public class GetStartedTest extends iOSTestCase {
         //клик на кнопке get started
         WelcomePageObject.clickGetStartedButton();
 
-
     }
-
-
 
 }
