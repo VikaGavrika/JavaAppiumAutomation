@@ -1,8 +1,9 @@
-package tests.ANDROID;
+package tests;
 
 import lib.CoreTestCase;
 import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
+import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
 public class ChangeAppConditionTests extends CoreTestCase {
@@ -16,7 +17,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         this.skipOnboarding();
 
         //инициализация
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
@@ -71,7 +72,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         this.skipOnboarding();
 
         //инициализация
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле

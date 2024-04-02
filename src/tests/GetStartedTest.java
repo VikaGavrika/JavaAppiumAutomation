@@ -1,13 +1,14 @@
-package tests.iOS;
+package tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.UI.WelcomePageObject;
 import org.junit.Test;
 
 public class GetStartedTest extends CoreTestCase {
     @Test
     public void testPassThroughWelcome(){
-        if (this.Platform.isAndroid()){
+        if (Platform.getInstance().isAndroid()){
             //сброс онбординга
             this.skipOnboarding();
             return;

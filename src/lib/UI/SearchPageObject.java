@@ -6,50 +6,28 @@ import org.openqa.selenium.WebElement;
 
 //методы, которые будут использоваться для поиска
 //этот метод наследуется от MainPageObject
-public class SearchPageObject extends  MainPageObject {
+abstract public class SearchPageObject extends  MainPageObject {
     //задаем константы. То, что всегда знаем, как выглядит. Например, поиск на странице. Он не изменен, его можно задать константой
     //или локатор кнопки, которая скипает онбординг
 
 
-    private static final String
-            SEARCH_INPUT = "xpath://*[@text='Search Wikipedia']";
-
-    private static final String
-            //в константу будет подставляться нужная подстрока для Java
-            //TPL метод шаблона. Заменяем какое-то значение по шаблону
-            SEARCH_REASULT_BY_SUBSTRING_TPL = "xpath://*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='{SUBSTRING}']";
-    private static final String
-            SEARCH_RESULTS_TITLE_TPL = "xpath://*[@resource-id=\"org.wikipedia:id/page_list_item_title\" and contains(@text, \"{SUBSTRING_TITLE}\")]";
-    private static final String
-            SEARCH_RESULTS_DESCRIPTION_TPL = "xpath://*[@resource-id=\"org.wikipedia:id/page_list_item_description\" and contains(@text, \"{SUBSTRING_DESCRIPTION}\")]";
-
-
-    private static final String
-            //локатор кнопки возврата
-            SEARCH_CANCEL_BUTTON = "xpath://*[@content-desc='Navigate up']";
-    private static final String
-            //локатор кнопки возврата
-            SEARCH_CLOSE_BUTTON = "id:org.wikipedia:id/search_close_btn";
-
-    private static final String
-            SEARCH_RESULT_ELEMENT = "xpath://*[@resource-id=\"org.wikipedia:id/search_results_list\"]/android.view.ViewGroup";
-
-    private static final String
-            SEARCH_EMPTY_RESULT_ELEMENT = "xpath://*[@text = 'No results']";
-
-    private static final String
-            RESULT_LIST = "id:org.wikipedia:id/search_results_list";
-    private static final String
-            EMPTY_RESULT_LIST = "id:org.wikipedia:id/search_empty_container";
-
-
+    protected static String SEARCH_INPUT;
+    protected static String SEARCH_RESULT_BY_SUBSTRING_TPL;
+    protected static String SEARCH_RESULTS_TITLE_TPL;
+    protected static String SEARCH_RESULTS_DESCRIPTION_TPL;
+    protected static String SEARCH_CANCEL_BUTTON ;
+    protected static String SEARCH_CLOSE_BUTTON;
+    protected static String SEARCH_RESULT_ELEMENT;
+    protected static String SEARCH_EMPTY_RESULT_ELEMENT;
+    protected static String RESULT_LIST;
+    protected static String EMPTY_RESULT_LIST;
 
 
     /*TEMPLATES METHODS */
     //метод, который подставляет подстроку по шаблону
     private static String getResultSearchElement(String substring){
         //меняем значение переменной SUBSTRING на строчку substring
-        return SEARCH_REASULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
+        return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
     private static String getResultTitleAndDescriptionElements(String title, String description){
         //меняем значение переменной SUBSTRING на строчку substring

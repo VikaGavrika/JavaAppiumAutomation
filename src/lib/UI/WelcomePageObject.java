@@ -13,7 +13,9 @@ public class WelcomePageObject extends MainPageObject{
     private static final String
             GET_STARTED_BUTTON = "xpath://*[@name=\"Get started\"]";
     private static final String
-            TITLE_ONBOARDING_TPL= "xpath://*[@name=\"{TITLE}\"]";
+            TITLE_ONBOARDING_TPL = "xpath://*[@name=\"{TITLE}\"]";
+    private static final String
+            SKIP = "xpath://*[@name='Skip']";
 
 
     /*TEMPLATES METHODS */
@@ -48,6 +50,11 @@ public class WelcomePageObject extends MainPageObject{
     //клик по кнопке
     public void clickGetStartedButton(){
         this.waitForElementAndClick(GET_STARTED_BUTTON,"Cannot find get started button and click",15);
+    }
+
+    //скипнуть онбординг
+    public void clickSkip(){
+       this.waitForElementAndClick(SKIP,"Cannot find and click skip button",15);
     }
 
 

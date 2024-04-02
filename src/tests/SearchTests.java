@@ -1,8 +1,9 @@
-package tests.ANDROID;
+package tests;
 
 import lib.CoreTestCase;
 import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
+import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
@@ -14,7 +15,7 @@ public class SearchTests extends CoreTestCase {
         //пропустить онбординг
         this.skipOnboarding();
 
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
@@ -29,7 +30,7 @@ public class SearchTests extends CoreTestCase {
         //пропустить онбординг
         this.skipOnboarding();
 
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
@@ -51,7 +52,7 @@ public class SearchTests extends CoreTestCase {
         this.skipOnboarding();
 
         //инициализация
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиск поля поиска
         WebElement element = SearchPageObject.initSearchInput();
         // Ожидаемый текст
@@ -69,7 +70,7 @@ public class SearchTests extends CoreTestCase {
         this.skipOnboarding();
 
         //инициализация
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
@@ -93,7 +94,7 @@ public class SearchTests extends CoreTestCase {
         this.skipOnboarding();
 
         //инициализация
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
@@ -115,7 +116,7 @@ public class SearchTests extends CoreTestCase {
         this.skipOnboarding();
 
         //инициализация
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //Зададим переменную, название статьи
@@ -141,7 +142,7 @@ public class SearchTests extends CoreTestCase {
         this.skipOnboarding();
 
         //инициализация
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //Зададим переменную, название статьи
@@ -161,7 +162,7 @@ public class SearchTests extends CoreTestCase {
         //пропустить онбординг
         this.skipOnboarding();
 
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле

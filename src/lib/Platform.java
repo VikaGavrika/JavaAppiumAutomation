@@ -16,6 +16,19 @@ public class Platform {
 
     private static final String APPIUM_URL = "http://127.0.0.1:4723";
 
+    //чтобы каждый раз не собирать платформу, поэтому исп-ем паттерн проектирование сингл тон,
+    //суть в том, что объект класса создается только один раз во время выполнения кода и хранится в одном из полей класса
+    private static Platform instance;
+    //приватный конструктор
+    private  Platform() {}
+    //вызов платформы
+    public static Platform getInstance(){
+        if (instance == null){
+            instance = new Platform();
+        }
+        return instance;
+    }
+
     //метод отвечающий за выбор драйвера
     public AppiumDriver getDriver() throws Exception{
         URL URL = new URL(APPIUM_URL);
@@ -27,6 +40,7 @@ public class Platform {
             throw new Exception ("Cannot detected type of the Driver. Platform value: "+this.getPlatformVar());
         }
     }
+
 
 
     //методы,которые определяют явл-ся ли платформа андройд или айос
