@@ -3,6 +3,7 @@ package tests;
 import lib.CoreTestCase;
 import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
+import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
@@ -21,7 +22,7 @@ public class SearchTests extends CoreTestCase {
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //метод проверяющий, что поиск по значению "Java" работает корректно и находится нужная статья с нужным заголовком
-        SearchPageObject.waitForSearchResult("Object-oriented programming language");
+        SearchPageObject.waitForSearchResult("Java (programming language)");
 
     }
     //Тест2. Отменяет поиск
@@ -178,7 +179,7 @@ public class SearchTests extends CoreTestCase {
         String articleDescriptionA = "Island in Indonesia";
         SearchPageObject.waitForElementByTitleAndDescription(articleTitleA, articleDescriptionA);
         // Добавлена проверка текста
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
         WebElement elementA = ArticlePageObject.waitForTitleElement("Java");
         if (articleTitleA.equals(elementA.getText())) {
             // Выводим в консоль название

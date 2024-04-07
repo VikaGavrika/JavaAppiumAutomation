@@ -69,7 +69,7 @@ public class Platform {
     private DesiredCapabilities getIOSCapabilities() {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("appium:platformName", "iOS");
-        capabilities.setCapability("appium:deviceName", "iPhone 11");
+        capabilities.setCapability("appium:deviceName", "iPhone11");
         capabilities.setCapability("appium:platformVersion", "17.4");
         capabilities.setCapability("appium:automationName", "XCUITest");
         capabilities.setCapability("appium:appPackage", "wikipedia.app");

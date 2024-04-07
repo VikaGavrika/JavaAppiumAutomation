@@ -1,10 +1,14 @@
 package tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.UI.ArticlePageObject;
 import lib.UI.MyListPageObject;
 import lib.UI.NavigationUI;
 import lib.UI.SearchPageObject;
+import lib.UI.factories.ArticlePageObjectFactory;
+import lib.UI.factories.MyListPageObjectFactory;
+import lib.UI.factories.NavigationUiFactory;
 import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
@@ -15,6 +19,10 @@ public class MyListTests extends CoreTestCase {
     // нажать ОК, выйти из статьи, нажать на кнопку списки, перейти на экран со спискими, выбрать один их них, нажать,
     // убедиться что в списке присутствует выбранная статья, удалить статью,
     // убедиться, что она удалена, тест будет считаться законченным
+
+    //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
+    private static final String name_of_folder = "articles";
+
     @Test
     public void testSavedFirstArticleToMyList(){
         //пропустить онбординг
@@ -27,37 +35,65 @@ public class MyListTests extends CoreTestCase {
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
 
         //Работа с заголовком статьи. Инициализация
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
         //поиск заголовка нужной статьи
         ArticlePageObject.waitForTitleElement("Java (programming language)");
         //делаем отдельную переменную для названия статьи
-        String article_title = ArticlePageObject.getArticleTitle("Object-oriented programming language");
-        //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
-        String name_of_folder = "articles";
-        // добавляем статью в список статей
-        ArticlePageObject.addArticleToMyList(name_of_folder);
-        //нажать кнопку назад 3 раза, чтобы вернуться на главную страницу
-        //цикл, повторяем код, пока не будет выполнено определенное условие.
-        int i = 0;
-        while (i < 3) {
+        String article_title = ArticlePageObject.getArticleTitle("Java (programming language)");
+
+        // добавляем статью в список статей для разных платформ
+        if(Platform.getInstance().isAndroid()){
+            ArticlePageObject.addArticleToMyList(name_of_folder);
+            //нажать кнопку назад 3 раза, чтобы вернуться на главную страницу
+            //цикл, повторяем код, пока не будет выполнено определенное условие.
+            int i = 0;
+            while (i < 3) {
+                ArticlePageObject.closeArticle();
+                i++;
+            }
+
+        } else {
+            //для iOS
+            ArticlePageObject.addArticlesToMySaved();
+            //закрыть статью
             ArticlePageObject.closeArticle();
-            i++;
+            //вернуться на главную
+            ArticlePageObject.comeBackToMain();
+
         }
+
         //инициализация навигация по приложению
-        NavigationUI NavigationUI = new NavigationUI(driver);
+        NavigationUI NavigationUI = NavigationUiFactory.get(driver);
         //нажать кнопку Save в меню
         NavigationUI.clickMyLists();
 
         //инициализация объектов в списке My list
-        MyListPageObject MyListPageObject = new MyListPageObject(driver);
-        //поиск списка статей по названию, название задано в переменную выше. клик на список статей
-        MyListPageObject.openFolderByName(name_of_folder);
+        MyListPageObject MyListPageObject = MyListPageObjectFactory.get(driver);
+        //если это андройд, то просто возвращаемся к след действиям
+        if (Platform.getInstance().isAndroid()){
+            return;
+        }else {
+            //для Айос. закрываем возникшее мод окно
+            MyListPageObject.close_modal_window();
 
-        //удаление статьи свайпом влево
-        MyListPageObject.swipeByArticleToDelete(article_title);
+        }
+        //Для Андройд. поиск списка статей по названию, название задано в переменную выше. клик на список статей
+        if (Platform.getInstance().isAndroid()){
+            MyListPageObject.openFolderByName(name_of_folder);
+        }
+
+        //удаление статьи свайпом влево для разных платформ
+        if (Platform.getInstance().isAndroid()){
+            MyListPageObject.swipeByArticleToDelete(article_title);
+        } else {
+            //для Айос
+            MyListPageObject.swipeByArticleToDeleteFromIOSList(article_title);
+        }
+
+
         //убеждаемся, что нужной статьи нет в списке
         MyListPageObject.waitForArticleToDisappearByTitle(article_title);
 
@@ -81,7 +117,7 @@ public class MyListTests extends CoreTestCase {
         SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
         //Работа с заголовком статьи. Инициализация
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
         //поиск заголовка нужной статьи
         ArticlePageObject.waitForTitleElement("Java (programming language)");
         //делаем отдельную переменную для названия статьи
@@ -114,7 +150,7 @@ public class MyListTests extends CoreTestCase {
         ArticlePageObject.addSecondArticleToMyList(name_of_folder);
 
         //инициализация объектов в списке My list
-        MyListPageObject MyListPageObject = new MyListPageObject(driver);
+        MyListPageObject MyListPageObject = MyListPageObjectFactory.get(driver);
         //убеждаемся, что есть заголовок первой статьи в открывшемся списке
         MyListPageObject.waitForArticleToAppearByTitle(title_first_article);
         //Выводим в консоль название

@@ -3,6 +3,7 @@ package tests;
 import lib.CoreTestCase;
 import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
+import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
         //Работа с заголовком статьи. Инициализация
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
         //получаем название заголовок статьи до ротации, чтобы в дальнейшем ее сравнить после ротации экрана
         //аттрибут (текст), который будем получать, запишем в переменную
         String title_before_rotation = ArticlePageObject.getArticleTitle("Object-oriented programming language");

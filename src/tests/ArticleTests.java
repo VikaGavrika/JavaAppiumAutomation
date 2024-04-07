@@ -3,6 +3,7 @@ package tests;
 import lib.CoreTestCase;
 import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
+import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
@@ -21,19 +22,19 @@ public class ArticleTests extends CoreTestCase {
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
 
         //используем новый метод. инициализация
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
         //поиск заголовка нужной статьи
         ArticlePageObject.waitForTitleElement("Java (programming language)");
         //получаем название статьи, текст этой статьи и записываем ее в переменную
-        String article_title = ArticlePageObject.getArticleTitle("Object-oriented programming language");
+        String article_title = ArticlePageObject.getArticleTitle("Java (programming language)");
 
         //используем это название статьи для сравнения
         assertEquals(
                 "We see unexpected title",
-                "Object-oriented programming language",
+                "Java (programming language)",
                 article_title
         );
 
@@ -50,13 +51,13 @@ public class ArticleTests extends CoreTestCase {
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
-        SearchPageObject.typeSearchLine("appium");
+        SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
-        SearchPageObject.clickByArticleWithSubstring("Appium");
+        SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
         //используем новый метод. инициализация
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
         //поиск заголовка нужной статьи, ждем появления названия
-        ArticlePageObject.waitForTitleElement("Automation for Apps");
+        ArticlePageObject.waitForTitleElement("Java (programming language)");
         //swipe
         ArticlePageObject.swipeToFooter();
 
@@ -77,7 +78,7 @@ public class ArticleTests extends CoreTestCase {
         //Поиск элемента в результатах
         SearchPageObject.waitForSearchResult("Object-oriented programming language");
         //Работа с заголовком статьи. Инициализация
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
         // Проверяем, что у статьи есть элемент title
         ArticlePageObject.assertElementPresentWithSearchTitle("Java (programming language)");
 

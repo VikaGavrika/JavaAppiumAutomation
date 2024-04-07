@@ -1,33 +1,23 @@
 package lib.UI;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import lib.Platform;
 
-public class ArticlePageObject extends MainPageObject{
-    //константа
-    private static final String
-            TITLE_TPL = "xpath://*[@text=\"{SUBSTRING}\"]";
-
-
-    private static final String
-            FOOTER_ELEMENT = "xpath://*[@text=\"View article in browser\"]";
-    private static final String
-            OPTIONS_BUTTON = "xpath://android.widget.ImageView[@content-desc=\"More options\"]";
-    private static final String
-            TOOLBAR_BUTTON = "xpath://android.widget.TextView[@resource-id=\"org.wikipedia:id/customize_toolbar\"]";
-    private static final String
-            NAVIGATE_BUTTON = "xpath://*[@content-desc='Navigate up']";
-    private static final String
-            SAVE_BUTTON = "xpath://android.widget.TextView[@resource-id=\"org.wikipedia:id/page_save\"]";
-    private static final String
-            OPTIONS_ADD_TO_MY_LIST_BUTTON = "xpath://*[@text=\"Add to list\"]";
-    private static final String
-            MY_LIST_NAME_INPUT = "xpath://*[@resource-id=\"org.wikipedia:id/text_input\"]";
-    private static final String
-            MY_LIST_OK_BUTTON = "xpath://*[@text=\"OK\"]";
-    private static final String
-            OPTIONS_VIEW_LIST_BUTTON = "xpath://*[@text=\"View list\"]";
+abstract public class ArticlePageObject extends MainPageObject{
+    protected static String
+        TITLE_TPL,
+        FOOTER_ELEMENT,
+        OPTIONS_BUTTON,
+        TOOLBAR_BUTTON,
+        NAVIGATE_BUTTON,
+        SAVE_BUTTON,
+        OPTIONS_ADD_TO_MY_LIST_BUTTON,
+        MY_LIST_NAME_INPUT,
+        MY_LIST_OK_BUTTON,
+        CLOSE_ARTICLE_BUTTON,
+        OPTIONS_VIEW_LIST_BUTTON,
+        CANCEL_BUTTON;
 
 
 
@@ -57,17 +47,29 @@ public class ArticlePageObject extends MainPageObject{
     public String getArticleTitle(String substring){
         WebElement title_element = waitForTitleElement(substring);
         //метод будет возвращать название статьи
-        return title_element.getAttribute("text");
+        if (Platform.getInstance().isAndroid()){
+            return title_element.getAttribute("text");
+        }else {
+            return title_element.getAttribute("name");
+        }
     }
 
 
     //сделаем метод свайпа до футера
     public void swipeToFooter(){
-        this.verticalSwipeToFindElement(
-                FOOTER_ELEMENT,
-                "Cannot find the end or Article",
-                20
-        );
+        if(Platform.getInstance().isAndroid()) {
+            this.verticalSwipeToFindElement(
+                    FOOTER_ELEMENT,
+                    "Cannot find the end or Article",
+                    50
+            );
+        } else {
+            this.swipeUPTitleElementAppear(FOOTER_ELEMENT,
+            "Cannot find the end or Article",
+            50);
+        }
+
+
     }
     //метод с шагами, которые добавляют статью в список статей
     public void addArticleToMyList(String name_of_folder){
@@ -171,18 +173,42 @@ public class ArticlePageObject extends MainPageObject{
         );
 
     }
-    //метод закрытия
+    //метод закрытия для разных платформ
     public void closeArticle(){
+        if(Platform.getInstance().isAndroid()) {
+            this.waitForElementAndClick(
+                    NAVIGATE_BUTTON,
+                    "Cannot find back-button to cancel search",
+                    20
+            );
+        }else {
+            this.waitForElementAndClick(
+                    CLOSE_ARTICLE_BUTTON,
+                    "Cannot find back-button to cancel search",
+                    20
+            );
+        }
+    }
+    //метод возврата на главную для Айос
+    public void comeBackToMain(){
         this.waitForElementAndClick(
-                NAVIGATE_BUTTON,
+                CANCEL_BUTTON,
                 "Cannot find back-button to cancel search",
                 20
         );
     }
+
+
     // Проверяем, что у статьи есть элемент title
     public void assertElementPresentWithSearchTitle(String substring){
         String title_Element_xpath = getResultTitleElement(substring);
         this.assertElementPresent(title_Element_xpath);
+    }
+
+    //метод добавления статьи в список для IOS
+    public void addArticlesToMySaved(){
+        this.waitForElementAndClick(OPTIONS_ADD_TO_MY_LIST_BUTTON,"Cannot find option to add article to reading list", 15);
+
     }
 
 

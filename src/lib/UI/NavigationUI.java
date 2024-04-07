@@ -3,9 +3,9 @@ package lib.UI;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 
-public class NavigationUI extends MainPageObject{
-    private static final String
-            MY_LIST_LINK = "xpath://android.widget.FrameLayout[@content-desc=\"Saved\"]";
+abstract public class NavigationUI extends MainPageObject{
+    protected static String
+            MY_LIST_LINK;
 
     public NavigationUI(AppiumDriver driver){
         super(driver);

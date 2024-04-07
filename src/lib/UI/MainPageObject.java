@@ -234,7 +234,7 @@ public class MainPageObject {
     public void verticalSwipe(int timeOfSwipe) {
         Dimension size = driver.manage().window().getSize();
         int startY = (int) (size.height * 0.70);
-        int endY = (int) (size.height * 0.30);
+        int endY = (int) (size.height * 0.20);
         int centerX = size.width / 2;
 
         PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH,"finger");
@@ -294,6 +294,45 @@ public class MainPageObject {
             System.out.println("сделано " + already_swiped + " свайпов");
         }
     }
+    public void swipeUPTitleElementAppear(String locator, String error_message, int max_swipes){
+        int already_swiped = 0;
+        //пока элемент не находится на экране
+        while (!this.isElementLocatedOnTheScreen(locator)){
+            //остановка цикла, если свайпы превысили макс значение
+            if (already_swiped > max_swipes){
+                //проверяем, что этого элемента все еще нет
+                Assert.assertTrue(error_message, this.isElementLocatedOnTheScreen(locator));
+            }
+            try {
+                //пока элемент не будет найден на экране, продолжаем свайпить
+                swipeQuick();
+            }catch (Exception e) {
+                // Обработка исключения
+                System.out.println("Ошибка при выполнении свайпа: " + e.getMessage());
+            }
+            //добавляем значение, пока кол-во свайпов не станет больше указ кол-ва. потом прекращаем цикл
+            ++already_swiped;    //счетчик свайпов с каждым циклом
+            // Вывод в консоль сколько свайпов было сделано
+            System.out.println("сделано " + already_swiped + " свайпов");
+        }
+    }
+
+    //метод, который выясняет есть ли элемент на странице
+    // для IOS так как в айос элемент всегда на странице, даже если его не видно. А нам надо найти элемент в конкретном месте
+    public boolean isElementLocatedOnTheScreen(String locator){
+        //выяснять есть ли элемент будем по его положению по вертикальной оси у по отношению ко всей длине страницы
+        //находим елемент по локатору и получаем его расположение по оси Y
+        int  element_location_by_y = this.waitForElementPresent(locator, "Cannot find element by locator", 15).getLocation().getY();
+        //находим длину всего экрана
+        int screen_size_by_y = driver.manage().window().getSize().getHeight();
+        //если переменная будет больше чем размер экрана по высоте, то будет фолс, переменной нет на зкране
+        //как только доскролим то переменной, то получаем тру
+        return element_location_by_y < screen_size_by_y;
+
+    }
+
+
+
     //метод перемещения элемента по координатам
     public void moveButton(int timeOfSwipe, int startX, int startY, int endX,int endY) {
 
@@ -327,7 +366,7 @@ public class MainPageObject {
 
         }
     }
-    //Метод свайпа влево
+    //Метод свайпа влево в Андройд
     public void leftSwipe(int timeOfSwipe, int startX, int startY, int endX,int endY) {
         try {
             //создаем PointerInput
@@ -343,6 +382,37 @@ public class MainPageObject {
             //Палец двигается к конечной точке
             swipe.addAction(finger.createPointerMove(Duration.ofMillis(timeOfSwipe),
                     PointerInput.Origin.viewport(), endX, endY));
+
+            //Убираем палец с экрана
+            swipe.addAction(finger.createPointerUp(0));
+
+            //Выполняем действия
+            driver.perform(Arrays.asList(swipe));
+
+            System.out.println("Свайп влево выполнен успешно!");
+        } catch (Exception e) {
+            // Обработка исключения
+            System.out.println("Ошибка при свайпе влево: " + e.getMessage());
+
+        }
+    }
+    //Метод свайпа влево в Айос
+    public void leftSwipeWithOffsetX(int timeOfSwipe, int elementX, int offsetX,  int startY,int endY) {
+        try {
+            //создаем PointerInput
+            PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+            //создаем последовательность действий
+            Sequence swipe = new Sequence(finger, 1);
+            System.out.println("Начинаю свайп влево...");
+
+            swipe.addAction(finger.createPointerMove(Duration.ofMillis(timeOfSwipe),
+                    PointerInput.Origin.viewport(), elementX, startY));
+            //Палец прикасается к экрану
+            swipe.addAction(finger.createPointerDown(0));
+
+            //Палец двигается к конечной точке
+            swipe.addAction(finger.createPointerMove(Duration.ofMillis(timeOfSwipe),
+                    PointerInput.Origin.viewport(), offsetX , endY));
 
             //Убираем палец с экрана
             swipe.addAction(finger.createPointerUp(0));
