@@ -28,8 +28,12 @@ public class MainPageObject {
         this.driver = driver;
     }
     //метод для определения типа локатора
+
+    //метод для определения локатор elementId
+
+
     private By getLocatorByString(String locator_with_type){
-        //записываем в переменную значение строки "тип локатора", которвй передаем в этот метод, и делит из по симоволу ":"
+        //записываем в переменную значение строки "тип локатора", который передаем в этот метод, и делит из по символу ":"
         String[] exploded_locator = locator_with_type.split(Pattern.quote(":"),2);
         String by_type = exploded_locator[0];
         String locator = exploded_locator[1];
@@ -168,10 +172,12 @@ public class MainPageObject {
         return wait.until(
                 //ждем выполнения конкретного условия, ждем элемент by
                 ExpectedConditions.presenceOfElementLocated(by)
+
         );
+
     }
 
-    //метод адаптированный, который ищет элемент с дефолтной задержкой в 3 сек
+    //метод адаптированный, который ищет элемент с дефолтной задержкой в 15 сек
     public WebElement waitForElementPresent(String locator, String error_message) {
         return waitForElementPresent(locator, error_message, 15);
     }

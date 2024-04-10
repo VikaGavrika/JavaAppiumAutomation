@@ -3,6 +3,10 @@ package lib.UI;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
 
 //методы, которые будут использоваться для поиска
 //этот метод наследуется от MainPageObject
@@ -124,11 +128,11 @@ abstract public class SearchPageObject extends  MainPageObject {
         return element;
     }
     //счетчик результатов поиска
-    public int getSearchResultsCount() {
-        return driver.findElements(By.xpath(SEARCH_RESULT_ELEMENT)).size();
+    public int getSearchResultsCount(int timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(SEARCH_RESULT_ELEMENT)));
+        return elements.size();
     }
-
-
 
 
     //подтверждаем, что на странице нет результатов

@@ -169,7 +169,7 @@ public class SearchTests extends CoreTestCase {
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //актуальное кол-во результатов поиска
-        int actualResultsCount = SearchPageObject.getSearchResultsCount();
+        int actualResultsCount = SearchPageObject.getSearchResultsCount(20);
         // Проверка, что количество найденных элементов не меньше 3,если меньше, то возвращает ошибку, если нет, то рез-ты поиска
         if (actualResultsCount < 3) {
             System.out.println("Количество найденных элементов меньше 3");

@@ -6,6 +6,7 @@ import lib.UI.ArticlePageObject;
 public class AndroidArticlePageObject extends ArticlePageObject {
     static {
         TITLE_TPL = "xpath://*[@text=\"{SUBSTRING}\"]";
+
         FOOTER_ELEMENT = "xpath://*[@text=\"View article in browser\"]";
         OPTIONS_BUTTON = "xpath://android.widget.ImageView[@content-desc=\"More options\"]";
         TOOLBAR_BUTTON = "xpath://android.widget.TextView[@resource-id=\"org.wikipedia:id/customize_toolbar\"]";

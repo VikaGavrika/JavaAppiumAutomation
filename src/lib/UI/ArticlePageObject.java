@@ -7,6 +7,7 @@ import lib.Platform;
 abstract public class ArticlePageObject extends MainPageObject{
     protected static String
         TITLE_TPL,
+        TITLE_TPL2,
         FOOTER_ELEMENT,
         OPTIONS_BUTTON,
         TOOLBAR_BUTTON,
@@ -32,6 +33,11 @@ abstract public class ArticlePageObject extends MainPageObject{
         //меняем значение переменной SUBSTRING на строчку substring
         return TITLE_TPL.replace("{SUBSTRING}", substring);
     }
+    private static String getResultTitleSecondElement(String substring){
+        //меняем значение переменной SUBSTRING на строчку substring
+        return TITLE_TPL2.replace("{SUBSTRING}", substring);
+    }
+
 
 
     /*TEMPLATES METHODS */
@@ -43,9 +49,26 @@ abstract public class ArticlePageObject extends MainPageObject{
 
     }
 
-    //метод в котором будем получать название статьи
-    public String getArticleTitle(String substring){
+    public WebElement waitForTitleSecondElement(String substring){
+        String title_Element_xpath = getResultTitleSecondElement(substring);
+        return this.waitForElementPresent(title_Element_xpath,"Cannot find article title",25);
+
+    }
+    //метод получение название первой статьи
+    public String getArticleTitle(String substring) {
         WebElement title_element = waitForTitleElement(substring);
+        //метод будет возвращать название статьи
+        if (Platform.getInstance().isAndroid()){
+            return title_element.getAttribute("text");
+        }else {
+            return title_element.getAttribute("name");
+        }
+    }
+
+
+    //метод в котором будем получать название второй статьи
+    public String getArticleSecondTitle(String substring){
+        WebElement title_element = waitForTitleSecondElement(substring);
         //метод будет возвращать название статьи
         if (Platform.getInstance().isAndroid()){
             return title_element.getAttribute("text");
@@ -117,6 +140,7 @@ abstract public class ArticlePageObject extends MainPageObject{
                 20
         );
 
+        //ввести название в поле ввода
         this.waitForElementAndSendKeys(
                 MY_LIST_NAME_INPUT,
                 name_of_folder,
@@ -210,6 +234,7 @@ abstract public class ArticlePageObject extends MainPageObject{
         this.waitForElementAndClick(OPTIONS_ADD_TO_MY_LIST_BUTTON,"Cannot find option to add article to reading list", 15);
 
     }
+
 
 
 
