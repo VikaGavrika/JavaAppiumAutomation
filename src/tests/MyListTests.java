@@ -10,7 +10,11 @@ import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.MyListPageObjectFactory;
 import lib.UI.factories.NavigationUiFactory;
 import lib.UI.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class MyListTests extends CoreTestCase {
     //Тесты связанные с MyLists списком сохраненных статей
@@ -22,6 +26,7 @@ public class MyListTests extends CoreTestCase {
 
     //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
     private static final String name_of_folder = "articles";
+
 
     @Test
     public void testSavedFirstArticleToMyList(){
@@ -109,6 +114,7 @@ public class MyListTests extends CoreTestCase {
 
         //инициализация
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
+        //1 статья
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
@@ -122,35 +128,72 @@ public class MyListTests extends CoreTestCase {
         ArticlePageObject.waitForTitleElement("Java (programming language)");
         //делаем отдельную переменную для названия статьи
         String title_first_article = ArticlePageObject.getArticleTitle("Java (programming language)");
-        //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
-        String name_of_folder = "articles";
-        // добавляем статью в список статей
-        ArticlePageObject.addArticleToMyList(name_of_folder);
 
-        //нажать кнопку назад 3 раза, чтобы вернуться на главную страницу
-        //цикл, повторяем код, пока не будет выполнено определенное условие.
-        int i = 0;
-        while (i < 3) {
+        // добавляем статью в список статей для разных платформ
+        if(Platform.getInstance().isAndroid()){
+            ArticlePageObject.addArticleToMyList(name_of_folder);
+            //нажать кнопку назад 3 раза, чтобы вернуться на главную страницу
+            //цикл, повторяем код, пока не будет выполнено определенное условие.
+            int i = 0;
+            while (i < 3) {
+                ArticlePageObject.closeArticle();
+                i++;
+            }
+
+        } else {
+            //для iOS
+            ArticlePageObject.addArticlesToMySaved();
+            //закрыть статью
             ArticlePageObject.closeArticle();
-            i++;
-        }
+            //вернуться на главную
+            ArticlePageObject.comeBackToMain();
 
+        }
+        //2 статья
         //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Appium");
         //Клик по статье
-        SearchPageObject.clickByArticleWithSubstring("Appium");
+        SearchPageObject.clickByArticleWithSubstring("Automation for Apps");
         //поиск заголовка нужной статьи
-        ArticlePageObject.waitForTitleElement("Appium");
+        ArticlePageObject.waitForTitleSecondElement("Appium");
         //делаем отдельную переменную для названия статьи
-        String title_second_article = ArticlePageObject.getArticleTitle("Appium");
+        String title_second_article = ArticlePageObject.getArticleSecondTitle("Appium");
 
         // добавляем статью в список статей
-        ArticlePageObject.addSecondArticleToMyList(name_of_folder);
+        if(Platform.getInstance().isAndroid()){
+            ArticlePageObject.addSecondArticleToMyList(name_of_folder);
+        }else {
+            //для iOS
+            ArticlePageObject.addArticlesToMySaved();
+            //закрыть статью
+            ArticlePageObject.closeArticle();
+            //вернуться на главную
+            ArticlePageObject.comeBackToMain();
+
+        }
+
+        //инициализация навигация по приложению
+        NavigationUI NavigationUI = NavigationUiFactory.get(driver);
+        //нажать кнопку Save в меню
+        NavigationUI.clickMyLists();
 
         //инициализация объектов в списке My list
         MyListPageObject MyListPageObject = MyListPageObjectFactory.get(driver);
+        //если это андройд, то просто возвращаемся к след действиям
+        if (Platform.getInstance().isAndroid()){
+            return;
+        }else {
+            //для Айос. закрываем возникшее мод окно
+            MyListPageObject.close_modal_window();
+
+        }
+
+        //кол-во сохраненных статей до удаления
+        int actualSavedArticlesCountBeforeDelete= MyListPageObject.getSavedArticleCount(20);
+
+
         //убеждаемся, что есть заголовок первой статьи в открывшемся списке
         MyListPageObject.waitForArticleToAppearByTitle(title_first_article);
         //Выводим в консоль название
@@ -160,10 +203,25 @@ public class MyListTests extends CoreTestCase {
         //Выводим в консоль название
         System.out.println("Найден " + title_second_article + " элемент с текстом.");
 
-        //удаление статьи свайпом влево
-        MyListPageObject.swipeByArticleToDeleteFromList(title_second_article);
+        //удаление статьи свайпом влево для разных платформ
+        if (Platform.getInstance().isAndroid()){
+            MyListPageObject.swipeByArticleToDeleteFromList(title_second_article);
+        } else {
+            //для Айос
+            MyListPageObject.swipeByArticleToDeleteFromIOSList(title_second_article);
+        }
 
-        //убеждаемся, что нет второй статьи в списке
+        //кол-во сохраненных статей после удаления
+        int actualSavedArticlesCountAfterDelete= MyListPageObject.getSavedArticleCount(20);
+
+
+        //Первая проверка, сравнение длин двух списков сохраненных статей, список сохраненных статей уменьшен на 1 после удаления
+        Assert.assertEquals(actualSavedArticlesCountBeforeDelete - 1, actualSavedArticlesCountAfterDelete);
+        System.out.println("Проверка на сравнение количества статей пройдена");
+
+
+        //Вторая проверка сравнения названия статей
+        //убеждаемся, что нет второй статьи в списке по заголовку
         MyListPageObject.waitForArticleToDisappearByTitle(title_second_article);
         //убеждаемся что есть первая статья в списке и кликаем на нее
         MyListPageObject.waitForArticleToAppearByTitleAndClick(title_first_article);
@@ -174,13 +232,13 @@ public class MyListTests extends CoreTestCase {
         //снова получаем значение названия статьи
         String title_first_article_after_list_change = ArticlePageObject.getArticleTitle("Java (programming language)");
 
-        //yбеждаемся, что заголовок в первой статье совпадает
-        //Сравниваем два значения
+        //Сравниваем два значения и yбеждаемся, что заголовок в первой статье совпадает
         assertEquals(
                 "Article title have been changed after rotation",
                 title_first_article,
                 title_first_article_after_list_change
         );
+        System.out.println("Проверка на сравнение заголовков пройдена");
 
     }
 
