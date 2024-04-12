@@ -8,6 +8,9 @@ import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 public class SearchTests extends CoreTestCase {
     //тесты, связанные с поиском
     //Тест1. Поиск
@@ -175,35 +178,39 @@ public class SearchTests extends CoreTestCase {
             System.out.println("Количество найденных элементов меньше 3");
             return;
         }
-        String articleTitleA = "Java";
-        String articleDescriptionA = "Island in Indonesia";
-        SearchPageObject.waitForElementByTitleAndDescription(articleTitleA, articleDescriptionA);
-        // Добавлена проверка текста
-        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
-        WebElement elementA = ArticlePageObject.waitForTitleElement("Java");
+
+
+        String articleTitleA = "Javanese language";
+        String articleDescriptionA = "Austronesian language";
+
+        //ждём, пока элемент с заданным заголовком и описанием станет видимым на странице.
+        WebElement elementA = SearchPageObject.waitForElementByTitleAndDescription(articleTitleA, articleDescriptionA);
         if (articleTitleA.equals(elementA.getText())) {
             // Выводим в консоль название
             System.out.println("Найден " + articleTitleA + " и " + articleDescriptionA + " элементы");
         }
 
-        String articleTitleB = "Java (programming language)";
-        String articleDescriptionB = "Object-oriented programming language";
-        SearchPageObject.waitForElementByTitleAndDescription(articleTitleB, articleDescriptionB);
-        // Добавлена проверка текста
-        WebElement elementB = ArticlePageObject.waitForTitleElement("Java (programming language)");
+        String articleTitleB = "Javanese script";
+        String articleDescriptionB = "Writing system used for several Austronesian languages";
+
+        //ждём, пока элемент с заданным заголовком и описанием станет видимым на странице.
+        WebElement elementB = SearchPageObject.waitForElementByTitleAndDescription(articleTitleB, articleDescriptionB);
         if (articleTitleB.equals(elementB.getText())) {
             // Выводим в консоль название
-            System.out.println("Найден " + articleTitleB + "и " + articleDescriptionB + " элементы");
+            System.out.println("Найден " + articleTitleB + " и " + articleDescriptionB + " элементы");
         }
 
-        String articleTitleC = "JavaScript";
-        String articleDescriptionC = "High-level programming language";
+        String articleTitleC = "Java (software platform)";
+        String articleDescriptionC = "Set of computer software and specifications";
+
+        //ждём, пока элемент с заданным заголовком и описанием станет видимым на странице.
         SearchPageObject.waitForElementByTitleAndDescription(articleTitleC, articleDescriptionC);
-        // Добавлена проверка текста
-        WebElement elementC = ArticlePageObject.waitForTitleElement("JavaScript");
-        if (articleTitleC.equals(elementC.getText())) {
-            //Выводим в консоль название
-            System.out.println("Найден " + articleTitleC + "и " + articleDescriptionC + " элементы");
+        //достаем текст из элемента
+        String elementC = SearchPageObject.getArticleByTitleAndDescription("Java (software platform)","Set of computer software and specifications");
+        //проверяем одинаковы ли две строки, без учета регистра и не пуста ли строка elementC
+        if (articleTitleC.equalsIgnoreCase(elementC) && !elementC.isEmpty()) {
+            // Выводим в консоль название
+            System.out.println("Найден " + articleTitleC + " и " + articleDescriptionC + " элементы");
         }
 
     }

@@ -32,20 +32,33 @@ public class MainPageObject {
     //метод для определения локатор elementId
 
 
-    private By getLocatorByString(String locator_with_type){
+    //private By getLocatorByString(String locator_with_type){
         //записываем в переменную значение строки "тип локатора", который передаем в этот метод, и делит из по символу ":"
-        String[] exploded_locator = locator_with_type.split(Pattern.quote(":"),2);
-        String by_type = exploded_locator[0];
-        String locator = exploded_locator[1];
+        //String[] exploded_locator = locator_with_type.split(Pattern.quote(":"),2);
+        //String by_type = exploded_locator[0];
+        //String locator = exploded_locator[1];
         //логика для разделения локаторов
-        if(by_type.equals("xpath")){
-            return By.xpath(locator);
-        } else if (by_type.equals("id")){
-            return By.id(locator);
-        } else {
-            throw new IllegalArgumentException("Cannot get type of locator. locator: " +locator_with_type);
-        }
+        //if(by_type.equals("xpath")){
+            //return By.xpath(locator);
+        //} else if (by_type.equals("id")){
+            //return By.id(locator);
+        //} else {
+            //throw new IllegalArgumentException("Cannot get type of locator. locator: " +locator_with_type);
+        //}
+    //}
 
+    //Для Комбинированных локаторов
+    private By getLocatorByString(String locator_with_type) {
+        //проверяем начинается ли строка с "xpath:"
+        if (locator_with_type.startsWith("xpath:")) {
+            //удаляет префикс "xpath:" и строка будет начинаться с 6го символа
+            return By.xpath(locator_with_type.substring(6)); // Remove "xpath:" prefix
+        } else if (locator_with_type.startsWith("id:")) {
+            //удаляет префикс "id:" и строка будет начинаться с 3го символа
+            return By.id(locator_with_type.substring(3)); // Remove "id:" prefix
+        } else {
+            throw new IllegalArgumentException("Unsupported locator type: " + locator_with_type);
+        }
     }
 
 
@@ -176,6 +189,7 @@ public class MainPageObject {
         );
 
     }
+
 
     //метод адаптированный, который ищет элемент с дефолтной задержкой в 15 сек
     public WebElement waitForElementPresent(String locator, String error_message) {

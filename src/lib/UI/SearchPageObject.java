@@ -1,11 +1,14 @@
 package lib.UI;
 
 import io.appium.java_client.AppiumDriver;
+import lib.Platform;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 //методы, которые будут использоваться для поиска
@@ -22,6 +25,7 @@ abstract public class SearchPageObject extends  MainPageObject {
     protected static String SEARCH_CANCEL_BUTTON ;
     protected static String SEARCH_CLOSE_BUTTON;
     protected static String SEARCH_RESULT_ELEMENT;
+    protected static String SEARCH_RESULT_ELEMENTS;
     protected static String SEARCH_EMPTY_RESULT_ELEMENT;
     protected static String RESULT_LIST;
     protected static String EMPTY_RESULT_LIST;
@@ -29,24 +33,71 @@ abstract public class SearchPageObject extends  MainPageObject {
 
     /*TEMPLATES METHODS */
     //метод, который подставляет подстроку по шаблону
-    private static String getResultSearchElement(String substring){
+    private static String getResultSearchElement(String title){
         //меняем значение переменной SUBSTRING на строчку substring
-        return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
+        String title_Elements_xpath = SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING_TITLE}", title);
+        return String.format("%s", title_Elements_xpath);
     }
     private static String getResultTitleAndDescriptionElements(String title, String description){
         //меняем значение переменной SUBSTRING на строчку substring
         String title_Elements_xpath = SEARCH_RESULTS_TITLE_TPL.replace("{SUBSTRING_TITLE}", title);
         String description_Elements_xpath = SEARCH_RESULTS_DESCRIPTION_TPL.replace("{SUBSTRING_DESCRIPTION}", description);
         return String.format("(%s)[%s]", title_Elements_xpath, description_Elements_xpath);
+
     }
 
+    public WebElement waitForElementByTitle(String substring) {
+        String title_Elements_xpath = getResultSearchElement(substring);
+        return this.waitForElementPresent(title_Elements_xpath, "Cannot find title by article " +substring, 30);
+    }
+
+    //метод получение название первой статьи
+    public String getArticleByTitleAndDescription(String title, String description) {
+        WebElement title_element = waitForElementByTitleAndDescription(title, description);
+        //метод будет возвращать название статьи
+        if (Platform.getInstance().isAndroid()){
+            return title_element.getAttribute("text");
+        }else {
+            return title_element.getAttribute("name");
+        }
+    }
 
 
     /*TEMPLATES METHODS */
 
     public WebElement waitForElementByTitleAndDescription(String title, String description) {
         String title_description_Elements_xpath = getResultTitleAndDescriptionElements(title,description);
-        return this.waitForElementPresent(title_description_Elements_xpath, "Cannot find article title and description", 15);
+        //return this.waitForElementPresent(String.valueOf(By.xpath(title_description_Elements_xpath)), "Cannot find article title and description", 30);
+        By by = By.xpath(title_description_Elements_xpath);
+
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        wait.withMessage("Cannot find article title and description");
+
+        return wait.until(
+                ExpectedConditions.presenceOfElementLocated(by)
+        );
+
+    }
+
+    //метод, который возвращает список элементов веб-страницы, соответствующих заданному заголовку и описанию.
+    public List<WebElement> findElementsByTitleAndDescription(String title, String description) {
+        String title_Elements_xpath = SEARCH_RESULTS_TITLE_TPL.replace("{SUBSTRING_TITLE}", title);
+        String description_Elements_xpath = SEARCH_RESULTS_DESCRIPTION_TPL.replace("{SUBSTRING_DESCRIPTION}", description);
+
+        By title_by = By.xpath(title_Elements_xpath);
+        By description_by = By.xpath(description_Elements_xpath);
+
+        List<WebElement> title_elements = driver.findElements(title_by);
+        List<WebElement> description_elements = driver.findElements(description_by);
+
+        List<WebElement> intersection = new ArrayList<>();
+        for (WebElement title_element : title_elements) {
+            if (description_elements.contains(title_element)) {
+                intersection.add(title_element);
+            }
+        }
+
+        return intersection;
     }
 
 
@@ -130,7 +181,7 @@ abstract public class SearchPageObject extends  MainPageObject {
     //счетчик результатов поиска
     public int getSearchResultsCount(int timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
-        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(SEARCH_RESULT_ELEMENT)));
+        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(SEARCH_RESULT_ELEMENTS)));
         return elements.size();
     }
 
