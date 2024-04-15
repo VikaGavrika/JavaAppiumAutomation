@@ -98,6 +98,15 @@ public class MainPageObject {
         return elements.size();
     }
 
+    //метод, который находит элемент
+    public WebElement findElement(String locator) {
+        By by = this.getLocatorByString(locator);
+        // Находим элемент
+        WebElement element = driver.findElement(by);
+        return element;
+
+    }
+
     //метод, проверяющий, что не нашлось ни одного элемента с текстом из поиска
     public void assertNoElementsPresentWithText(String locator, String search_line, String error_message){
         //получаем кол-во элементов
@@ -131,14 +140,15 @@ public class MainPageObject {
 
 
     //метод, который проверяет наличие нескольких результатов поиска на странице с ожидаемым текстом
-    public void assertMultipleSearchResultsWithText(WebElement resultsList, String expectedText) {
+    public void assertMultipleSearchResultsWithText(String locator, WebElement resultsList, String expectedText) {
         // Получаем кол-во статей с ожидаемым словом
-        int resultsCount = resultsList.findElements(By.id("org.wikipedia:id/page_list_item_title")).size();
+        By by = this.getLocatorByString(locator);
+        int resultsCount = resultsList.findElements(by).size();
         //считаем сколько заголовков содержит ожидаемый текст
         //инициализируем переменную, присваиваем значение 0 для инициализации счетчика
         int expectedTextResultsCount = 0;
         //перебираем в цикле все элементы в листе
-        for (WebElement result : resultsList.findElements(By.id("org.wikipedia:id/page_list_item_title"))) {
+        for (WebElement result : resultsList.findElements(by)) {
             //получаем текстовое содержимое текущего WebElement (представляющего результат поиска) и преобразуем его
             // в нижний регистр, для более корректного сравнения в будущем, также проверяем, содержит ли expectedText.
             if (result.getText().toLowerCase().contains(expectedText)) {

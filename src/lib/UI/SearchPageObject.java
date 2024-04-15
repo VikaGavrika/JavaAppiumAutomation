@@ -33,11 +33,12 @@ abstract public class SearchPageObject extends  MainPageObject {
 
     /*TEMPLATES METHODS */
     //метод, который подставляет подстроку по шаблону
-    private static String getResultSearchElement(String title){
+    private static String getResultSearchElement(String substring){
         //меняем значение переменной SUBSTRING на строчку substring
-        String title_Elements_xpath = SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING_TITLE}", title);
-        return String.format("%s", title_Elements_xpath);
+        String Elements_xpath = SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
+        return String.format("%s",Elements_xpath);
     }
+
     private static String getResultTitleAndDescriptionElements(String title, String description){
         //меняем значение переменной SUBSTRING на строчку substring
         String title_Elements_xpath = SEARCH_RESULTS_TITLE_TPL.replace("{SUBSTRING_TITLE}", title);
@@ -46,10 +47,6 @@ abstract public class SearchPageObject extends  MainPageObject {
 
     }
 
-    public WebElement waitForElementByTitle(String substring) {
-        String title_Elements_xpath = getResultSearchElement(substring);
-        return this.waitForElementPresent(title_Elements_xpath, "Cannot find title by article " +substring, 30);
-    }
 
     //метод получение название первой статьи
     public String getArticleByTitleAndDescription(String title, String description) {
@@ -125,7 +122,8 @@ abstract public class SearchPageObject extends  MainPageObject {
 
     public void waitForSearchResult (String substring){
         String search_result_xpath = getResultSearchElement(substring);
-        this.waitForElementPresent(search_result_xpath,"Cannot find search result with substring" +substring);
+        this.waitForElementPresent(search_result_xpath,"Cannot find search result with substring " +substring);
+        System.out.println("Нашел результат поиска " +substring);
     }
 
     public void clickByArticleWithSubstring (String substring){
@@ -174,10 +172,10 @@ abstract public class SearchPageObject extends  MainPageObject {
     public WebElement resultsList() {
         this.waitForElementPresent(RESULT_LIST, "Cannot find search resultList",15);
         // Находим элемент
-        WebElement element = driver.findElement(By.id(RESULT_LIST));
-        // Возвращаем найденный элемент
-        return element;
+        return this.findElement(RESULT_LIST);
+
     }
+
     //счетчик результатов поиска
     public int getSearchResultsCount(int timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
@@ -203,7 +201,7 @@ abstract public class SearchPageObject extends  MainPageObject {
     }
     public void assertSearchResultsWithText(WebElement element, String expectedText){
         //подтверждаем, что в поле поиска есть текст
-        this.assertMultipleSearchResultsWithText(element, expectedText);
+        this.assertMultipleSearchResultsWithText(SEARCH_RESULT_ELEMENT, element, expectedText);
     }
 
 

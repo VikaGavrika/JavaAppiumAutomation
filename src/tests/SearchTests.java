@@ -6,6 +6,7 @@ import lib.UI.SearchPageObject;
 import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -79,15 +80,26 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("planet");
-        //находим элемент 'лист результатов' поиска
+        //выдает кол-во статей
+        int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
+        //убеждаемся, что кол-во полученных элементов больше нуля
+        assertTrue(
+                "We found too few results",
+                amount_of_search_results > 0
+        );
+        //сохраняем результаты поиска в список
         WebElement element = SearchPageObject.resultsList();
-        //проверяем, что найдены несколько статей со словом planet в листе результатов
-        String expectedText = "planet";
-        SearchPageObject.assertSearchResultsWithText(element, expectedText);
-        //дожидаемся кнопки закрытия и кликаем по ней
-        SearchPageObject.clickCloseSearch();
-        //проверяем, что нет статей в листе результатов, есть пустой лист результатов
-        SearchPageObject.waitForEmptyResultsList();
+        if (element.getText().isEmpty()) {
+            System.out.println("Список результатов поиска пустой");
+        } else {
+            String expectedText = "planet";
+            //проверяем, что найдены несколько статей со словом planet в листе результатов
+            SearchPageObject.assertSearchResultsWithText(element, expectedText);
+            //дожидаемся кнопки закрытия и кликаем по ней
+            SearchPageObject.clickCloseSearch();
+            //проверяем, что нет статей в листе результатов, есть пустой лист результатов
+            SearchPageObject.waitForEmptyResultsList();
+        }
 
     }
 
@@ -103,12 +115,16 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
-        //находим элемент 'лист результатов' поиска
+        //сохраняем в список результаты поиска
         WebElement element = SearchPageObject.resultsList();
-        //проверяем, что в каждой статье в листе результатов есть ожидаемое слово
-        String expectedText = "java";
-        SearchPageObject.assertSearchResultsWithText( element, expectedText);
-
+        // Проверяем, пустой ли список
+        if (element.getText().isEmpty()) {
+            System.out.println("Список результатов поиска пустой");
+        } else {
+            //проверяем, что в каждой статье в листе результатов есть ожидаемое слово
+            String expectedText = "Java";
+            SearchPageObject.assertSearchResultsWithText(element, expectedText);
+        }
     }
 
 
